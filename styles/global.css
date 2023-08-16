@@ -1,0 +1,43 @@
+*, *::before, *::after
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+
+html
+{
+    font: 300 16px / 1 "Segoe UI", 'Lucida Sans', sans-serif;
+    scroll-behavior: smooth;
+}
+
+body
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    min-height: 100vh;
+    padding: 20px;
+    background: url("../images/pizza-bg.jpg") center no-repeat #1c1c24;
+    background-size: cover;
+    color: white;
+}
+
+input
+{
+    font: inherit;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button /* Chrome, Safari, Edge, Opera */
+{
+    -webkit-appearance: none;
+}
+
+input[type=number] /* Firefox */
+{
+    -moz-appearance: textfield;
+}

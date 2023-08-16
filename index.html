@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pizza calculator & comparison</title>
+    <link rel="shortcut icon" href="images/icons/one-piece.png">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/pizzacalc.css">
+
+    <script src="scripts/pizzacalc.js" defer></script>
+</head>
+
+<body>
+    <p id="title">🍕 Which pizza is the best price for money?</p>
+    <p id="info-panel">Click + below and choose shape to add more pizzas!</p>
+        
+    <div id="main">
+        <div id="pizza-add" class="pizza-box">
+            <div id="add-plus">
+                <img src="images/icons/plus.png" alt="Add pizza">
+            </div>
+
+            <div id="add-circ-pizza" onclick="addPizza(1)">
+                <img src="images/icons/circ-pizza.png" alt="Circular pizza">
+            </div>
+
+            <div id="add-rect-pizza" onclick="addPizza(0)">
+                <img src="images/icons/rect-pizza.png" alt="Rectangular pizza">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

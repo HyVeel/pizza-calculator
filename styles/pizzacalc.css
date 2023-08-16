@@ -1,0 +1,124 @@
+#title, #info-panel
+{
+    padding: 25px;
+    border-radius: 25px;
+    font-size: 2em;
+    text-align: center;
+    background-color: #0003;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); /* Safari */
+}
+
+#info-panel
+{
+    padding: 20px;
+    border-radius: 20px;
+    font-size: 1.5em;
+}
+
+#main
+{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    font-size: 1.2em;
+    user-select: none;
+}
+
+.pizza-box
+{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 300px;
+    padding: 20px;
+    border: 0.1px solid #fff3;
+    border-radius: 10px;
+    background-color: #0003;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px); /* Safari */
+    transition: background-color 1s;
+}
+
+.pizza-box.best
+{
+    background-color: #000a;
+}
+
+.pizza-box img
+{
+    align-self: center;
+    max-width: 150px;
+}
+
+.pizza-info
+{
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.pizza-info input
+{
+    width: 100%;
+    border: none;
+    text-align: right;
+    color: inherit;
+    background-color: transparent;
+}
+
+.info-value
+{
+    color: yellow;
+}
+
+#pizza-add
+{
+    gap: 0;
+    min-height: 450px;
+    padding: 0;
+    cursor: pointer;
+}
+
+#add-plus, #add-circ-pizza, #add-rect-pizza
+{
+    flex-grow: 1;
+    display: grid;
+    place-content: center;
+    transition: background-color 0.5s;
+}
+
+#add-circ-pizza
+{
+    display: none;
+    border-radius: 10px 10px 0 0;
+}
+
+#add-rect-pizza
+{
+    display: none;
+    border-radius: 0 0 10px 10px;
+}
+
+#pizza-add:hover #add-plus
+{
+    display: none;
+}
+
+#pizza-add:hover #add-circ-pizza, #pizza-add:hover #add-rect-pizza
+{
+    display: grid;
+}
+
+#add-circ-pizza:hover, #add-rect-pizza:hover
+{
+    background-color: #0006;
+    transition: none;
+}
+
+#add-circ-pizza:active, #add-rect-pizza:active
+{
+    background-color: #0008;
+}
