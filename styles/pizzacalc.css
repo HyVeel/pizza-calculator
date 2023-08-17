@@ -69,7 +69,7 @@
     background-color: transparent;
 }
 
-.info-value
+.pizza-total-area, .pizza-total-price, .pizza-price-cm2
 {
     color: yellow;
 }
