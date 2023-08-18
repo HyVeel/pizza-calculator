@@ -164,7 +164,7 @@ function addPizza(shape, quantity, price, x, y)
     newPizza.boxNode = newPizzaBox
 
     newPizzaBox.innerHTML += `
-        <img src="images/icons/r-pizza.png" alt="Rectangular pizza">
+        <img src="images/icons/` + shape + `-pizza.png">
 
         <div class="pizza-info">
             <p>Quantity</p>
