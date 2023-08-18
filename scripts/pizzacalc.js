@@ -14,6 +14,7 @@ class Pizza
         pizzas.push(this)
     }
 
+    calcTotalArea = () => this.calcArea() * this.quantity
     calcTotalPrice = () => this.price * this.quantity
     calcPricePerCm2 = () => this.price * this.quantity / this.calcTotalArea() * 100 //cents
     
@@ -37,7 +38,7 @@ class Pizza
 
     updateBoxOutputs()
     {
-        document.querySelector("#" + this.boxNode.id + " .pizza-total-area").innerText = Number.isFinite(this.calcTotalArea()) ? this.calcTotalArea().toFixed(3) : ""
+        document.querySelector("#" + this.boxNode.id + " .pizza-total-area").innerText = Number.isFinite(this.calcTotalArea()) ? this.calcTotalArea().toFixed(2) : ""
         document.querySelector("#" + this.boxNode.id + " .pizza-total-price").innerText = Number.isFinite(this.calcTotalPrice()) ? this.calcTotalPrice().toFixed(2) : ""
         document.querySelector("#" + this.boxNode.id + " .pizza-price-cm2").innerText = Number.isFinite(this.calcPricePerCm2()) ? this.calcPricePerCm2().toFixed(2) : ""
         markBestPizzas()
@@ -52,7 +53,8 @@ class CircularPizza extends Pizza
         this.diameter = diameter
     }
 
-    calcTotalArea = () => Math.PI * (this.diameter / 2) ** 2 * this.quantity
+    calcArea = () => Math.PI * (this.diameter / 2) ** 2
+    calcSlicePrice = () => this.price / 8
 
     setDiameter(diameter)
     {
@@ -68,6 +70,12 @@ class CircularPizza extends Pizza
             document.querySelector("#" + this.boxNode.id + " input[name='diameter']").value = this.diameter
         }
     }
+
+    updateBoxOutputs()
+    {
+        super.updateBoxOutputs()
+        document.querySelector("#" + this.boxNode.id + " .pizza-slice-price").innerText = Number.isFinite(this.calcSlicePrice()) ? this.calcSlicePrice().toFixed(2) : ""
+    }
 }
 
 class RectangularPizza extends Pizza
@@ -79,7 +87,7 @@ class RectangularPizza extends Pizza
         this.width = width
     }
 
-    calcTotalArea = () => this.length * this.width * this.quantity
+    calcArea = () => this.length * this.width
 
     setLength(length)
     {
@@ -111,12 +119,20 @@ function findBestPizzas()
     {
         if(!isFinite(pizza.calcPricePerCm2())) continue
         else if(!best[0]) best.push(pizza)
-        else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2()) { best = []; best.push(pizza) }
+        else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2())
+        {
+            best = []
+            best.push(pizza)
+        }
         else if(pizza.calcPricePerCm2() == best[0].calcPricePerCm2())
         {
             if(pizza.calcPricePerCm2() == 0)
             {
-                if(pizza.calcTotalArea() > best[0].calcTotalArea()) { best = []; best.push(pizza) }
+                if(pizza.calcTotalArea() > best[0].calcTotalArea())
+                {
+                    best = []
+                    best.push(pizza)
+                }
                 else if(pizza.calcTotalArea() == best[0].calcTotalArea()) best.push(pizza)
             }
             else best.push(pizza)
@@ -128,7 +144,7 @@ function findBestPizzas()
 function markBestPizzas()
 {
     removeBestPizzaMarks()
-    if(findBestPizzas()[0]) for(const pizza of findBestPizzas()) pizza.boxNode.classList.add("best")
+    for(const pizza of findBestPizzas()) pizza.boxNode.classList.add("best")
 }
 
 function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".best")) box.classList.remove("best") }
@@ -147,11 +163,9 @@ function addPizza(shape, quantity, price, x, y)
     main.insertBefore(newPizzaBox, document.getElementById("pizza-add"))
     newPizza.boxNode = newPizzaBox
 
-    const newPizzaImg = document.createElement("img")
-    newPizzaImg.src = "images/icons/" + shape +"-pizza.png";
-    newPizzaBox.appendChild(newPizzaImg)
-
     newPizzaBox.innerHTML += `
+        <img src="images/icons/r-pizza.png" alt="Rectangular pizza">
+
         <div class="pizza-info">
             <p>Quantity</p>
             <input name="quantity" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setQuantity(this.value)">
@@ -168,6 +182,11 @@ function addPizza(shape, quantity, price, x, y)
         <div class="pizza-info">
             <p>Diameter [cm]</p>
             <input name="diameter" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setDiameter(this.value)">
+        </div>
+        
+        <div class="pizza-info">
+            <p>Slice price [&#36;]</p>
+            <p class="output pizza-slice-price"></p>
         </div>`
     }
     else if(shape == "r")
@@ -187,17 +206,17 @@ function addPizza(shape, quantity, price, x, y)
     newPizzaBox.innerHTML += `
         <div class="pizza-info">
             <p>Total area [cm&#178;]</p>
-            <p class="pizza-total-area"></p>
+            <p class="output pizza-total-area"></p>
         </div>
 
         <div class="pizza-info">
             <p>Total price [&#36;]</p>
-            <p class="pizza-total-price"></p>
+            <p class="output pizza-total-price"></p>
         </div>
 
         <div class="pizza-info">
             <p>Price per cm&#178; [&#162;]</p>
-            <p class="pizza-price-cm2"></p>
+            <p class="output pizza-price-cm2"></p>
         </div>
     </div>`
 
