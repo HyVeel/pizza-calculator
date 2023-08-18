@@ -8,10 +8,10 @@ class Pizza
 
     constructor(quantity = 1, price)
     {
+        pizzas.push(this)
         this.id = Pizza.counter++
         this.quantity = quantity
         this.price = price
-        pizzas.push(this)
     }
 
     calcTotalArea = () => this.calcArea() * this.quantity
@@ -164,17 +164,17 @@ function addPizza(shape, quantity, price, x, y)
     newPizza.boxNode = newPizzaBox
 
     newPizzaBox.innerHTML += `
-        <img src="images/icons/` + shape + `-pizza.png">
+    <img src="images/icons/` + shape + `-pizza.png">
 
-        <div class="pizza-info">
-            <p>Quantity</p>
-            <input name="quantity" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setQuantity(this.value)">
-        </div>
+    <div class="pizza-info">
+        <p>Quantity</p>
+        <input name="quantity" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setQuantity(this.value)">
+    </div>
 
-        <div class="pizza-info">
-            <p>Price [&#36;]</p>
-            <input name="price" type="number" step="0.01" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setPrice(this.value)">
-        </div>`
+    <div class="pizza-info">
+        <p>Price [&#36;]</p>
+        <input name="price" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setPrice(this.value)">
+    </div>`
 
     if(shape == "c")
     {
@@ -204,20 +204,19 @@ function addPizza(shape, quantity, price, x, y)
     }
 
     newPizzaBox.innerHTML += `
-        <div class="pizza-info">
-            <p>Total area [cm&#178;]</p>
-            <p class="output pizza-total-area"></p>
-        </div>
+    <div class="pizza-info">
+        <p>Total area [cm&#178;]</p>
+        <p class="output pizza-total-area"></p>
+    </div>
 
-        <div class="pizza-info">
-            <p>Total price [&#36;]</p>
-            <p class="output pizza-total-price"></p>
-        </div>
+    <div class="pizza-info">
+        <p>Total price [&#36;]</p>
+        <p class="output pizza-total-price"></p>
+    </div>
 
-        <div class="pizza-info">
-            <p>Price per cm&#178; [&#162;]</p>
-            <p class="output pizza-price-cm2"></p>
-        </div>
+    <div class="pizza-info">
+        <p>Price per cm&#178; [&#162;]</p>
+        <p class="output pizza-price-cm2"></p>
     </div>`
 
     newPizza.updateBoxInputs()
