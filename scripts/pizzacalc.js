@@ -9,7 +9,7 @@ class Pizza
     constructor(quantity = 1, price)
     {
         pizzas.push(this)
-        this.id = Pizza.counter++
+        this.id = ++Pizza.counter /* useless */
         this.quantity = quantity
         this.price = price
     }
@@ -32,17 +32,20 @@ class Pizza
 
     updateBoxInputs()
     {
-        document.querySelector("#" + this.boxNode.id + " input[name='quantity']").value = this.quantity ?? ""
-        document.querySelector("#" + this.boxNode.id + " input[name='price']").value = this.price ?? ""
+        this.boxNode.querySelector(".pizza-quantity").value = this.quantity ?? ""
+        this.boxNode.querySelector(".pizza-price").value = this.price ?? ""
     }
 
     updateBoxOutputs()
     {
-        document.querySelector("#" + this.boxNode.id + " .pizza-total-area").innerText = Number.isFinite(this.calcTotalArea()) ? this.calcTotalArea().toFixed(2) : ""
-        document.querySelector("#" + this.boxNode.id + " .pizza-total-price").innerText = Number.isFinite(this.calcTotalPrice()) ? this.calcTotalPrice().toFixed(2) : ""
-        document.querySelector("#" + this.boxNode.id + " .pizza-price-cm2").innerText = Number.isFinite(this.calcPricePerCm2()) ? this.calcPricePerCm2().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-total-area").innerText = Number.isFinite(this.calcTotalArea()) ? this.calcTotalArea().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-total-price").innerText = Number.isFinite(this.calcTotalPrice()) ? this.calcTotalPrice().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-price-cm2").innerText = Number.isFinite(this.calcPricePerCm2()) ? this.calcPricePerCm2().toFixed(2) : ""
         markBestPizzas()
     }
+
+    exportPizza() { return [this.shape, this.quantity, this.price] }
+    duplicatePizza = () => importPizza(this.exportPizza())
 }
 
 class CircularPizza extends Pizza
@@ -50,6 +53,7 @@ class CircularPizza extends Pizza
     constructor(quantity, price, diameter)
     {
         super(quantity, price)
+        this.shape = "c"
         this.diameter = diameter
     }
 
@@ -67,15 +71,17 @@ class CircularPizza extends Pizza
         if(this.boxNode)
         {
             super.updateBoxInputs()
-            document.querySelector("#" + this.boxNode.id + " input[name='diameter']").value = this.diameter
+            this.boxNode.querySelector(".pizza-diameter").value = this.diameter ?? ""
         }
     }
 
     updateBoxOutputs()
     {
         super.updateBoxOutputs()
-        document.querySelector("#" + this.boxNode.id + " .pizza-slice-price").innerText = Number.isFinite(this.calcSlicePrice()) ? this.calcSlicePrice().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-slice-price").innerText = Number.isFinite(this.calcSlicePrice()) ? this.calcSlicePrice().toFixed(2) : ""
     }
+
+    exportPizza = () => super.exportPizza().concat(this.diameter)
 }
 
 class RectangularPizza extends Pizza
@@ -83,6 +89,7 @@ class RectangularPizza extends Pizza
     constructor(quantity, price, length, width)
     {
         super(quantity, price)
+        this.shape = "r"
         this.length = length
         this.width = width
     }
@@ -106,10 +113,50 @@ class RectangularPizza extends Pizza
         if(this.boxNode)
         {
             super.updateBoxInputs()
-            document.querySelector("#" + this.boxNode.id + " input[name='length']").value = this.length
-            document.querySelector("#" + this.boxNode.id + " input[name='width']").value = this.width
+            this.boxNode.querySelector(".pizza-length").value = this.length ?? ""
+            this.boxNode.querySelector(".pizza-width").value = this.width ?? ""
         }
     }
+
+    exportPizza = () => super.exportPizza().concat(this.length, this.width)
+}
+
+class PizzaSlice extends Pizza
+{
+    constructor(quantity, price, side)
+    {
+        super(quantity, price)
+        this.shape = "s"
+        this.side = side
+    }
+
+    calcArea = () => Math.PI * this.side ** 2 / 8
+    calcPizzaArea = () => this.calcArea() * 8
+    calcPizzaPrice = () => this.price * 8
+
+    setSide(side)
+    {
+        this.side = parseFloat(side)
+        this.updateBoxOutputs()
+    }
+
+    updateBoxInputs()
+    {
+        if(this.boxNode)
+        {
+            super.updateBoxInputs()
+            this.boxNode.querySelector(".pizza-side").value = this.side ?? ""
+        }
+    }
+
+    updateBoxOutputs()
+    {
+        super.updateBoxOutputs()
+        this.boxNode.querySelector(".slice-pizza-area").innerText = Number.isFinite(this.calcPizzaArea()) ? this.calcPizzaArea().toFixed(2) : ""
+        this.boxNode.querySelector(".slice-pizza-price").innerText = Number.isFinite(this.calcPizzaPrice()) ? this.calcPizzaPrice().toFixed(2) : ""
+    }
+
+    exportPizza = () => super.exportPizza().concat(this.side)
 }
 
 function findBestPizzas()
@@ -149,31 +196,33 @@ function markBestPizzas()
 
 function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".best")) box.classList.remove("best") }
 
-function addPizza(shape, quantity, price, x, y)
+function addPizza(shape, quantity, price, ...args)
 {
+    let newPizza
+    if(shape == "c") newPizza = new CircularPizza(quantity, price, args[0])
+    else if(shape == "r") newPizza = new RectangularPizza(quantity, price, args[0], args[1])
+    else if(shape == "s") newPizza = new PizzaSlice(quantity, price, args[0])
+    else return false
+
     if(infoPanel) infoPanel.remove()
 
-    let newPizza
-    if(shape == "c") newPizza = new CircularPizza(quantity, price, x)
-    else if(shape == "r") newPizza = new RectangularPizza(quantity, price, x, y)
-
     const newPizzaBox = document.createElement("div")
-    newPizzaBox.id = "id-" + newPizza.id
-    newPizzaBox.classList.add("pizza-box")
+    newPizzaBox.className = "pizza-box"
+    newPizzaBox.pizza = newPizza
     main.insertBefore(newPizzaBox, document.getElementById("pizza-add"))
     newPizza.boxNode = newPizzaBox
 
     newPizzaBox.innerHTML += `
-    <img src="images/icons/` + shape + `-pizza.png">
+    <img src="images/icons/` + newPizza.shape + `-pizza.png">
 
     <div class="pizza-info">
         <p>Quantity</p>
-        <input name="quantity" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setQuantity(this.value)">
+        <input class="pizza-quantity" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setQuantity(this.value)">
     </div>
 
     <div class="pizza-info">
         <p>Price [&#36;]</p>
-        <input name="price" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setPrice(this.value)">
+        <input class="pizza-price" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
     if(shape == "c")
@@ -181,7 +230,7 @@ function addPizza(shape, quantity, price, x, y)
         newPizzaBox.innerHTML += `
         <div class="pizza-info">
             <p>Diameter [cm]</p>
-            <input name="diameter" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setDiameter(this.value)">
+            <input class="pizza-diameter" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setDiameter(this.value)">
         </div>
         
         <div class="pizza-info">
@@ -192,14 +241,32 @@ function addPizza(shape, quantity, price, x, y)
     else if(shape == "r")
     {
         newPizzaBox.innerHTML += `
-        <div id="pizza-length"  class="pizza-info">
+        <div class="pizza-info">
             <p>Length [cm]</p>
-            <input name="length" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setLength(this.value)">
+            <input class="pizza-length" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setLength(this.value)">
         </div>
 
-        <div id="pizza-width"  class="pizza-info">
+        <div class="pizza-info">
             <p>Width [cm]</p>
-            <input name="width" type="number" min="0" placeholder="0" oninput="pizzas[` + newPizza.id + `].setWidth(this.value)">
+            <input class="pizza-width" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
+        </div>`
+    }
+    else if(shape == "s")
+    {
+        newPizzaBox.innerHTML += `
+        <div class="pizza-info">
+            <p>Side [cm]</p>
+            <input class="pizza-side" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setSide(this.value)">
+        </div>
+        
+        <div class="pizza-info">
+            <p>Pizza area [cm&#178;]</p>
+            <p class="output slice-pizza-area"></p>
+        </div>
+        
+        <div class="pizza-info">
+            <p>Pizza price [&#36;]</p>
+            <p class="output slice-pizza-price"></p>
         </div>`
     }
 
@@ -222,3 +289,5 @@ function addPizza(shape, quantity, price, x, y)
     newPizza.updateBoxInputs()
     newPizza.updateBoxOutputs()
 }
+
+importPizza = pizza => addPizza(...pizza)
