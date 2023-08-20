@@ -49,7 +49,7 @@
 .pizza-box img
 {
     align-self: center;
-    max-width: 125px;
+    max-height: 125px;
 }
 
 .pizza-info
@@ -67,7 +67,7 @@
     border: none;
     text-align: right;
     color: inherit;
-    background-color: transparent;
+    background-color: inherit;
 }
 
 .pizza-info .output
@@ -83,43 +83,52 @@
     cursor: pointer;
 }
 
-#add-plus, #add-circ-pizza, #add-rect-pizza
+#add-plus, .add-button
 {
     flex-grow: 1;
-    display: grid;
+    display: none;
     place-content: center;
     transition: background-color 0.5s;
 }
 
-#add-circ-pizza
-{
-    display: none;
-    border-radius: 10px 10px 0 0;
-}
-
-#add-rect-pizza
-{
-    display: none;
-    border-radius: 0 0 10px 10px;
-}
-
-#pizza-add:hover #add-plus
-{
-    display: none;
-}
-
-#pizza-add:hover #add-circ-pizza, #pizza-add:hover #add-rect-pizza
+#pizza-add:not(:hover) #add-plus
 {
     display: grid;
 }
 
-#add-circ-pizza:hover, #add-rect-pizza:hover
+#add-circ-pizza
+{
+    flex-grow: 2;
+    border-radius: 10px 10px 0 0;
+}
+
+#add-pizza-slice
+{
+    border-radius: 0 0 10px 10px;
+}
+
+#pizza-add:hover .add-button
+{
+    display: grid;
+}
+
+.add-button:hover
 {
     background-color: #0006;
     transition: none;
 }
 
-#add-circ-pizza:active, #add-rect-pizza:active
+.add-button:active
 {
     background-color: #0008;
+}
+
+#add-circ-pizza img
+{
+    max-height: 150px;
+}
+
+#add-rect-pizza img, #add-pizza-slice img
+{
+    max-height: 75px;
 }
