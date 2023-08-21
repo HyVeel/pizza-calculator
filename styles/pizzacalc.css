@@ -26,7 +26,7 @@
     user-select: none;
 }
 
-.pizza-box
+.pizza-box, #pizza-add
 {
     display: flex;
     flex-direction: column;
@@ -46,7 +46,7 @@
     background-color: #000a;
 }
 
-.pizza-box img
+.pizza-box img, #pizza-add img
 {
     align-self: center;
     max-height: 125px;

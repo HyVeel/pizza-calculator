@@ -39,5 +39,5 @@ input::-webkit-inner-spin-button /* Chrome, Safari, Edge, Opera */
 
 input[type=number] /* Firefox */
 {
-    -moz-appearance: textfield;
+    appearance: textfield;
 }
