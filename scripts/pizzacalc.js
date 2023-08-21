@@ -9,7 +9,7 @@ class Pizza
     constructor(quantity = 1, price)
     {
         pizzas.push(this)
-        this.id = ++Pizza.counter /* useless */
+        this.id = ++Pizza.counter //useless
         this.quantity = quantity
         this.price = price
     }
@@ -17,7 +17,7 @@ class Pizza
     calcTotalArea = () => this.calcArea() * this.quantity
     calcTotalPrice = () => this.price * this.quantity
     calcPricePerCm2 = () => this.price * this.quantity / this.calcTotalArea() * 100 //cents
-    
+
     setQuantity(quantity)
     {
         this.quantity = parseInt(quantity)
@@ -44,8 +44,14 @@ class Pizza
         markBestPizzas()
     }
 
+    deletePizza()
+    {
+        this.boxNode.remove()
+        pizzas.splice(pizzas.indexOf(this), 1)
+    }
+
     exportPizza() { return [this.shape, this.quantity, this.price] }
-    duplicatePizza = () => importPizza(this.exportPizza())
+    duplicatePizza() { importPizza(this.exportPizza()) }
 }
 
 class CircularPizza extends Pizza
@@ -68,11 +74,8 @@ class CircularPizza extends Pizza
 
     updateBoxInputs()
     {
-        if(this.boxNode)
-        {
-            super.updateBoxInputs()
-            this.boxNode.querySelector(".pizza-diameter").value = this.diameter ?? ""
-        }
+        super.updateBoxInputs()
+        this.boxNode.querySelector(".pizza-diameter").value = this.diameter ?? ""
     }
 
     updateBoxOutputs()
@@ -81,7 +84,7 @@ class CircularPizza extends Pizza
         this.boxNode.querySelector(".pizza-slice-price").innerText = Number.isFinite(this.calcSlicePrice()) ? this.calcSlicePrice().toFixed(2) : ""
     }
 
-    exportPizza = () => super.exportPizza().concat(this.diameter)
+    exportPizza() { super.exportPizza().concat(this.diameter) }
 }
 
 class RectangularPizza extends Pizza
@@ -110,15 +113,12 @@ class RectangularPizza extends Pizza
 
     updateBoxInputs()
     {
-        if(this.boxNode)
-        {
-            super.updateBoxInputs()
-            this.boxNode.querySelector(".pizza-length").value = this.length ?? ""
-            this.boxNode.querySelector(".pizza-width").value = this.width ?? ""
-        }
+        super.updateBoxInputs()
+        this.boxNode.querySelector(".pizza-length").value = this.length ?? ""
+        this.boxNode.querySelector(".pizza-width").value = this.width ?? ""
     }
 
-    exportPizza = () => super.exportPizza().concat(this.length, this.width)
+    exportPizza() { super.exportPizza().concat(this.length, this.width) }
 }
 
 class PizzaSlice extends Pizza
@@ -142,11 +142,8 @@ class PizzaSlice extends Pizza
 
     updateBoxInputs()
     {
-        if(this.boxNode)
-        {
-            super.updateBoxInputs()
-            this.boxNode.querySelector(".pizza-side").value = this.side ?? ""
-        }
+        super.updateBoxInputs()
+        this.boxNode.querySelector(".pizza-side").value = this.side ?? ""
     }
 
     updateBoxOutputs()
@@ -156,19 +153,19 @@ class PizzaSlice extends Pizza
         this.boxNode.querySelector(".slice-pizza-price").innerText = Number.isFinite(this.calcPizzaPrice()) ? this.calcPizzaPrice().toFixed(2) : ""
     }
 
-    exportPizza = () => super.exportPizza().concat(this.side)
+    exportPizza() { super.exportPizza().concat(this.side) }
 }
 
 function findBestPizzas()
 {
-    let best = []
+    const best = []
     for(const pizza of pizzas)
     {
         if(!isFinite(pizza.calcPricePerCm2())) continue
         else if(!best[0]) best.push(pizza)
         else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2())
         {
-            best = []
+            best.length = 0
             best.push(pizza)
         }
         else if(pizza.calcPricePerCm2() == best[0].calcPricePerCm2())
@@ -177,7 +174,7 @@ function findBestPizzas()
             {
                 if(pizza.calcTotalArea() > best[0].calcTotalArea())
                 {
-                    best = []
+                    best.length = 0
                     best.push(pizza)
                 }
                 else if(pizza.calcTotalArea() == best[0].calcTotalArea()) best.push(pizza)
@@ -199,7 +196,7 @@ function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".b
 function addPizza(shape, quantity, price, ...args)
 {
     let newPizza
-    if(shape == "c") newPizza = new CircularPizza(quantity, price, args[0])
+    if(shape == "c" || shape == undefined) newPizza = new CircularPizza(quantity, price, args[0])
     else if(shape == "r") newPizza = new RectangularPizza(quantity, price, args[0], args[1])
     else if(shape == "s") newPizza = new PizzaSlice(quantity, price, args[0])
     else return false
@@ -225,14 +222,14 @@ function addPizza(shape, quantity, price, ...args)
         <input class="pizza-price" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
-    if(shape == "c")
+    if(shape == "c" || shape == undefined)
     {
         newPizzaBox.innerHTML += `
         <div class="pizza-info">
             <p>Diameter [cm]</p>
             <input class="pizza-diameter" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setDiameter(this.value)">
         </div>
-        
+
         <div class="pizza-info">
             <p>Slice price [&#36;]</p>
             <p class="output pizza-slice-price"></p>
@@ -258,12 +255,12 @@ function addPizza(shape, quantity, price, ...args)
             <p>Side [cm]</p>
             <input class="pizza-side" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setSide(this.value)">
         </div>
-        
+
         <div class="pizza-info">
             <p>Pizza area [cm&#178;]</p>
             <p class="output slice-pizza-area"></p>
         </div>
-        
+
         <div class="pizza-info">
             <p>Pizza price [&#36;]</p>
             <p class="output slice-pizza-price"></p>
@@ -290,4 +287,6 @@ function addPizza(shape, quantity, price, ...args)
     newPizza.updateBoxOutputs()
 }
 
-importPizza = pizza => addPizza(...pizza)
+function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
+function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.deletePizza() }
+function importPizza(pizza) { addPizza(...pizza) }
