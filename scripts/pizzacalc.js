@@ -2,14 +2,12 @@ const main = document.getElementById("main")
 const infoPanel = document.getElementById("info-panel")
 const pizzas = []
 
-class Pizza
-{
+class Pizza {
     static counter = 0
 
-    constructor(quantity = 1, price)
-    {
+    constructor(quantity = 1, price) {
         pizzas.push(this)
-        this.id = ++Pizza.counter //useless
+        this.id = ++Pizza.counter
         this.quantity = quantity
         this.price = price
     }
@@ -18,34 +16,29 @@ class Pizza
     calcTotalPrice = () => this.price * this.quantity
     calcPricePerCm2 = () => this.price * this.quantity / this.calcTotalArea() * 100 //cents
 
-    setQuantity(quantity)
-    {
+    setQuantity(quantity) {
         this.quantity = parseInt(quantity)
         this.updateBoxOutputs()
     }
 
-    setPrice(price)
-    {
+    setPrice(price) {
         this.price = parseFloat(price)
         this.updateBoxOutputs()
     }
 
-    updateBoxInputs()
-    {
-        this.boxNode.querySelector(".pizza-quantity").value = this.quantity ?? ""
-        this.boxNode.querySelector(".pizza-price").value = this.price ?? ""
+    updateBoxInputs() {
+        this.boxNode.querySelector(".pizza-box__quantity").value = this.quantity ?? ""
+        this.boxNode.querySelector(".pizza-box__price").value = this.price ?? ""
     }
 
-    updateBoxOutputs()
-    {
-        this.boxNode.querySelector(".pizza-total-area").innerText = Number.isFinite(this.calcTotalArea()) ? this.calcTotalArea().toFixed(2) : ""
-        this.boxNode.querySelector(".pizza-total-price").innerText = Number.isFinite(this.calcTotalPrice()) ? this.calcTotalPrice().toFixed(2) : ""
-        this.boxNode.querySelector(".pizza-price-cm2").innerText = Number.isFinite(this.calcPricePerCm2()) ? this.calcPricePerCm2().toFixed(2) : ""
+    updateBoxOutputs() {
+        this.boxNode.querySelector(".pizza-box__total-area").innerText = Number.isFinite(this.calcTotalArea()) ? this.calcTotalArea().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-box__total-price").innerText = Number.isFinite(this.calcTotalPrice()) ? this.calcTotalPrice().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-box__price-cm2").innerText = Number.isFinite(this.calcPricePerCm2()) ? this.calcPricePerCm2().toFixed(2) : ""
         markBestPizzas()
     }
 
-    deletePizza()
-    {
+    deletePizza() {
         this.boxNode.remove()
         pizzas.splice(pizzas.indexOf(this), 1)
     }
@@ -54,10 +47,8 @@ class Pizza
     duplicatePizza() { importPizza(this.exportPizza()) }
 }
 
-class CircularPizza extends Pizza
-{
-    constructor(quantity, price, diameter)
-    {
+class CircularPizza extends Pizza {
+    constructor(quantity, price, diameter) {
         super(quantity, price)
         this.shape = "c"
         this.diameter = diameter
@@ -66,31 +57,26 @@ class CircularPizza extends Pizza
     calcArea = () => Math.PI * (this.diameter / 2) ** 2
     calcSlicePrice = () => this.price / 8
 
-    setDiameter(diameter)
-    {
+    setDiameter(diameter) {
         this.diameter = parseFloat(diameter)
         this.updateBoxOutputs()
     }
 
-    updateBoxInputs()
-    {
+    updateBoxInputs() {
         super.updateBoxInputs()
-        this.boxNode.querySelector(".pizza-diameter").value = this.diameter ?? ""
+        this.boxNode.querySelector(".pizza-box__diameter").value = this.diameter ?? ""
     }
 
-    updateBoxOutputs()
-    {
+    updateBoxOutputs() {
         super.updateBoxOutputs()
-        this.boxNode.querySelector(".pizza-slice-price").innerText = Number.isFinite(this.calcSlicePrice()) ? this.calcSlicePrice().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-box__slice-price").innerText = Number.isFinite(this.calcSlicePrice()) ? this.calcSlicePrice().toFixed(2) : ""
     }
 
-    exportPizza() { super.exportPizza().concat(this.diameter) }
+    exportPizza() { return super.exportPizza().concat(this.diameter) }
 }
 
-class RectangularPizza extends Pizza
-{
-    constructor(quantity, price, length, width)
-    {
+class RectangularPizza extends Pizza {
+    constructor(quantity, price, length, width) {
         super(quantity, price)
         this.shape = "r"
         this.length = length
@@ -99,32 +85,27 @@ class RectangularPizza extends Pizza
 
     calcArea = () => this.length * this.width
 
-    setLength(length)
-    {
+    setLength(length) {
         this.length = parseFloat(length)
         this.updateBoxOutputs()
     }
 
-    setWidth(width)
-    {
+    setWidth(width) {
         this.width = parseFloat(width)
         this.updateBoxOutputs()
     }
 
-    updateBoxInputs()
-    {
+    updateBoxInputs() {
         super.updateBoxInputs()
-        this.boxNode.querySelector(".pizza-length").value = this.length ?? ""
-        this.boxNode.querySelector(".pizza-width").value = this.width ?? ""
+        this.boxNode.querySelector(".pizza-box__length").value = this.length ?? ""
+        this.boxNode.querySelector(".pizza-box__width").value = this.width ?? ""
     }
 
-    exportPizza() { super.exportPizza().concat(this.length, this.width) }
+    exportPizza() { return super.exportPizza().concat(this.length, this.width) }
 }
 
-class PizzaSlice extends Pizza
-{
-    constructor(quantity, price, side)
-    {
+class PizzaSlice extends Pizza {
+    constructor(quantity, price, side) {
         super(quantity, price)
         this.shape = "s"
         this.side = side
@@ -134,50 +115,41 @@ class PizzaSlice extends Pizza
     calcPizzaArea = () => this.calcArea() * 8
     calcPizzaPrice = () => this.price * 8
 
-    setSide(side)
-    {
+    setSide(side) {
         this.side = parseFloat(side)
         this.updateBoxOutputs()
     }
 
-    updateBoxInputs()
-    {
+    updateBoxInputs() {
         super.updateBoxInputs()
-        this.boxNode.querySelector(".pizza-side").value = this.side ?? ""
+        this.boxNode.querySelector(".pizza-box__side").value = this.side ?? ""
     }
 
-    updateBoxOutputs()
-    {
+    updateBoxOutputs() {
         super.updateBoxOutputs()
-        this.boxNode.querySelector(".slice-pizza-area").innerText = Number.isFinite(this.calcPizzaArea()) ? this.calcPizzaArea().toFixed(2) : ""
-        this.boxNode.querySelector(".slice-pizza-price").innerText = Number.isFinite(this.calcPizzaPrice()) ? this.calcPizzaPrice().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-box__pizza-area").innerText = Number.isFinite(this.calcPizzaArea()) ? this.calcPizzaArea().toFixed(2) : ""
+        this.boxNode.querySelector(".pizza-box__pizza-price").innerText = Number.isFinite(this.calcPizzaPrice()) ? this.calcPizzaPrice().toFixed(2) : ""
     }
 
-    exportPizza() { super.exportPizza().concat(this.side) }
+    exportPizza() { return super.exportPizza().concat(this.side) }
 }
 
-function findBestPizzas()
-{
+function findBestPizzas() {
     const best = []
-    for(const pizza of pizzas)
-    {
+    for(const pizza of pizzas) {
         if(!isFinite(pizza.calcPricePerCm2())) continue
         else if(!best[0]) best.push(pizza)
-        else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2())
-        {
+        else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2()) {
             best.length = 0
             best.push(pizza)
         }
-        else if(pizza.calcPricePerCm2() == best[0].calcPricePerCm2())
-        {
-            if(pizza.calcPricePerCm2() == 0)
-            {
-                if(pizza.calcTotalArea() > best[0].calcTotalArea())
-                {
+        else if(pizza.calcPricePerCm2() === best[0].calcPricePerCm2()) {
+            if(pizza.calcPricePerCm2() === 0) {
+                if(pizza.calcTotalArea() > best[0].calcTotalArea()) {
                     best.length = 0
                     best.push(pizza)
                 }
-                else if(pizza.calcTotalArea() == best[0].calcTotalArea()) best.push(pizza)
+                else if(pizza.calcTotalArea() === best[0].calcTotalArea()) best.push(pizza)
             }
             else best.push(pizza)
         }
@@ -185,102 +157,104 @@ function findBestPizzas()
     return best
 }
 
-function markBestPizzas()
-{
+function markBestPizzas() {
     removeBestPizzaMarks()
-    for(const pizza of findBestPizzas()) pizza.boxNode.classList.add("best")
+    for(const pizza of findBestPizzas()) pizza.boxNode.classList.add("pizza-box--best")
 }
 
-function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".best")) box.classList.remove("best") }
+function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".pizza-box--best")) box.classList.remove("pizza-box--best") }
 
-function addPizza(shape, quantity, price, ...args)
-{
-    let newPizza
-    if(shape == "c" || shape == undefined) newPizza = new CircularPizza(quantity, price, args[0])
-    else if(shape == "r") newPizza = new RectangularPizza(quantity, price, args[0], args[1])
-    else if(shape == "s") newPizza = new PizzaSlice(quantity, price, args[0])
-    else return false
-
+function addPizza(shape, quantity, price, ...args) {
     if(infoPanel) infoPanel.remove()
+
+    let newPizza
+    if(shape === "c" || shape === undefined) newPizza = new CircularPizza(quantity, price, args[0])
+    else if(shape === "r") newPizza = new RectangularPizza(quantity, price, args[0], args[1])
+    else if(shape === "s") newPizza = new PizzaSlice(quantity, price, args[0])
+    else return false
 
     const newPizzaBox = document.createElement("div")
     newPizzaBox.className = "pizza-box"
     newPizzaBox.pizza = newPizza
-    main.insertBefore(newPizzaBox, document.getElementById("pizza-add"))
+    main.insertBefore(newPizzaBox, document.querySelector(".pizza-add"))
     newPizza.boxNode = newPizzaBox
 
     newPizzaBox.innerHTML += `
-    <img src="images/icons/` + newPizza.shape + `-pizza.png">
+    <p class="pizza-box__id">#` + newPizza.id + `</p>
 
-    <div class="pizza-info">
-        <p>Quantity</p>
-        <input class="pizza-quantity" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setQuantity(this.value)">
+    <div class="pizza-box__buttons">
+        <img class="pizza-box__duplicate" title="Duplicate" src="images/icons/duplicate.png" onclick="this.parentNode.parentNode.pizza.duplicatePizza()">
+        <img class="pizza-box__delete" title="Delete" src="images/icons/delete.png" onclick="this.parentNode.parentNode.pizza.deletePizza()">
     </div>
 
-    <div class="pizza-info">
+    <img class="pizza-box__image" src="images/` + newPizza.shape + `-pizza.png">
+
+    <div class="pizza-box__info">
+        <p>Quantity</p>
+        <input class="pizza-box__quantity" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setQuantity(this.value)">
+    </div>
+
+    <div class="pizza-box__info">
         <p>Price [&#36;]</p>
-        <input class="pizza-price" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
+        <input class="pizza-box__price" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
-    if(shape == "c" || shape == undefined)
-    {
+    if(shape === "c" || shape === undefined) {
         newPizzaBox.innerHTML += `
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Diameter [cm]</p>
-            <input class="pizza-diameter" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setDiameter(this.value)">
+            <input class="pizza-box__diameter" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setDiameter(this.value)">
         </div>
 
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Slice price [&#36;]</p>
-            <p class="output pizza-slice-price"></p>
+            <p class="pizza-box__output pizza-box__slice-price"></p>
         </div>`
     }
-    else if(shape == "r")
-    {
+    else if(shape === "r") {
         newPizzaBox.innerHTML += `
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Length [cm]</p>
-            <input class="pizza-length" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setLength(this.value)">
+            <input class="pizza-box__length" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setLength(this.value)">
         </div>
 
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Width [cm]</p>
-            <input class="pizza-width" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
+            <input class="pizza-box__width" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
         </div>`
     }
-    else if(shape == "s")
-    {
+    else if(shape === "s") {
         newPizzaBox.innerHTML += `
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Side [cm]</p>
-            <input class="pizza-side" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setSide(this.value)">
+            <input class="pizza-box__side" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setSide(this.value)">
         </div>
 
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Pizza area [cm&#178;]</p>
-            <p class="output slice-pizza-area"></p>
+            <p class="pizza-box__output pizza-box__pizza-area"></p>
         </div>
 
-        <div class="pizza-info">
+        <div class="pizza-box__info">
             <p>Pizza price [&#36;]</p>
-            <p class="output slice-pizza-price"></p>
+            <p class="pizza-box__output pizza-box__pizza-price"></p>
         </div>`
     }
 
     newPizzaBox.innerHTML += `
-    <div class="pizza-info">
+    <div class="pizza-box__info">
         <p>Total area [cm&#178;]</p>
-        <p class="output pizza-total-area"></p>
+        <p class="pizza-box__output pizza-box__total-area"></p>
     </div>
 
-    <div class="pizza-info">
+    <div class="pizza-box__info">
         <p>Total price [&#36;]</p>
-        <p class="output pizza-total-price"></p>
+        <p class="pizza-box__output pizza-box__total-price"></p>
     </div>
 
-    <div class="pizza-info">
+    <div class="pizza-box__info">
         <p>Price per cm&#178; [&#162;]</p>
-        <p class="output pizza-price-cm2"></p>
+        <p class="pizza-box__output pizza-box__price-cm2"></p>
     </div>`
 
     newPizza.updateBoxInputs()
