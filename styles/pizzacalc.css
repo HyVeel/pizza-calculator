@@ -33,7 +33,7 @@
     border-radius: 10px;
     background-color: #0003;
     backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); /* Safari */
+    -webkit-backdrop-filter: blur(5px);
     transition: all 1s;
 }
 
