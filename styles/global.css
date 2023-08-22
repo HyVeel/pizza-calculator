@@ -1,19 +1,17 @@
-*, *::before, *::after
-{
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border: none;
     outline: none;
 }
 
-html
-{
+html {
     font: 300 16px / 1 "Segoe UI", 'Lucida Sans', sans-serif;
     scroll-behavior: smooth;
 }
 
-body
-{
+body {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -21,23 +19,21 @@ body
     gap: 20px;
     min-height: 100vh;
     padding: 20px;
-    background: url("../images/pizza-bg.jpg") center no-repeat #1c1c24;
-    background-size: cover;
+    background: url("../images/pizza-bg.jpg") center / cover no-repeat fixed #1c1c24;
     color: white;
 }
 
-input
-{
+input {
     font: inherit;
+    color: inherit;
+    background-color: inherit;
 }
 
 input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button /* Chrome, Safari, Edge, Opera */
-{
+input::-webkit-inner-spin-button /* Chrome, Safari, Edge, Opera */ {
     -webkit-appearance: none;
 }
 
-input[type=number] /* Firefox */
-{
+input[type=number] /* Firefox */ {
     appearance: textfield;
 }
