@@ -19,7 +19,7 @@ body {
     gap: 20px;
     min-height: 100vh;
     padding: 20px;
-    background: url("../images/pizza-bg.jpg") center / cover no-repeat fixed #1c1c24;
+    background: url("../images/backgrounds/pizza-bg1.jpg") center / cover no-repeat fixed #1c1c24;
     color: white;
 }
 
@@ -29,13 +29,11 @@ input {
     background-color: inherit;
 }
 
-/* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
+input::-webkit-inner-spin-button { /* Chrome, Safari, Edge, Opera */
     -webkit-appearance: none;
 }
 
-/* Firefox */
-input[type=number] {
+input[type=number] { /* Firefox */
     appearance: textfield;
 }
