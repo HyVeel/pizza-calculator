@@ -1,6 +1,7 @@
 const main = document.getElementById("main")
 const infoPanel = document.getElementById("info-panel")
 const pizzas = []
+const backgrounds = 5
 
 class Pizza {
     static counter = 0
@@ -199,7 +200,7 @@ function addPizza(shape, quantity, price, ...args) {
         <input class="pizza-box__price" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
-    if(shape === "c" || shape === undefined) {
+    if(newPizza.shape === "c") {
         newPizzaBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Diameter [cm]</p>
@@ -211,7 +212,7 @@ function addPizza(shape, quantity, price, ...args) {
             <p class="pizza-box__output pizza-box__slice-price"></p>
         </div>`
     }
-    else if(shape === "r") {
+    else if(newPizza.shape === "r") {
         newPizzaBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Length [cm]</p>
@@ -223,7 +224,7 @@ function addPizza(shape, quantity, price, ...args) {
             <input class="pizza-box__width" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
         </div>`
     }
-    else if(shape === "s") {
+    else if(newPizza.shape === "s") {
         newPizzaBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Side [cm]</p>
@@ -264,3 +265,11 @@ function addPizza(shape, quantity, price, ...args) {
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.deletePizza() }
 function importPizza(pizza) { addPizza(...pizza) }
+let getRandom = (min = -1, max = 1) => Math.floor(Math.random() * (max - min + 1)) + min
+
+function setRandomBackground(min = 1, max = backgrounds) {
+    document.body.style.backgroundImage = "url('images/backgrounds/pizza-bg" + getRandom(min, max) + ".jpg')"
+    return document.body.style.backgroundImage
+}
+
+//setRandomBackground()
