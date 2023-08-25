@@ -2,8 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    border: none;
-    outline: none;
 }
 
 html {
@@ -19,14 +17,15 @@ body {
     gap: 20px;
     min-height: 100vh;
     padding: 20px;
-    background: url("../images/backgrounds/pizza-bg1.jpg") center / cover no-repeat fixed #1c1c24;
+    background: /* url("../images/backgrounds/pizza-bg1.jpg") */ center / cover no-repeat fixed #1c1c24;
     color: white;
 }
 
-input {
+input, button {
     font: inherit;
     color: inherit;
     background-color: inherit;
+    border: none;
 }
 
 input::-webkit-outer-spin-button,
@@ -36,4 +35,8 @@ input::-webkit-inner-spin-button { /* Chrome, Safari, Edge, Opera */
 
 input[type=number] { /* Firefox */
     appearance: textfield;
+}
+
+:focus {
+    outline: 1px solid white;
 }

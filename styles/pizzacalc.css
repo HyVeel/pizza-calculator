@@ -1,4 +1,16 @@
-#title, #info-panel {
+@media (pointer: coarse) { /* touchscreen */
+    .pizza-box__id, .pizza-box__duplicate, .pizza-box__delete {
+        opacity: 0.5;
+    }
+}
+
+@media not (pointer: coarse) {
+    .pizza-box__id, .pizza-box__duplicate, .pizza-box__delete {
+        opacity: 0;
+    }
+}
+
+#title-panel, #info-panel {
     padding: 25px;
     border-radius: 25px;
     font-size: 2em;
@@ -20,7 +32,9 @@
     flex-wrap: wrap;
     gap: 20px;
     font-size: 1.2em;
+    caret-color: yellow;
     user-select: none;
+    -webkit-user-select: none;
 }
 
 .pizza-box, .pizza-add {
@@ -38,13 +52,12 @@
 }
 
 .pizza-box--best {
-    background-color: #000a;
+    background-color: #000b;
 }
 
 .pizza-box__id {
     position: absolute;
     font-style: italic;
-    opacity: 0;
     transition: all 0.5s;
 }
 
@@ -61,9 +74,8 @@
 
 .pizza-box__duplicate, .pizza-box__delete {
     height: 1em;
-    opacity: 0;
-    cursor: pointer;
     transition: all 0.5s;
+    cursor: pointer;
 }
 
 .pizza-box:hover :where(.pizza-box__id, .pizza-box__duplicate, .pizza-box__delete) {
@@ -71,8 +83,12 @@
     transition: none;
 }
 
-.pizza-box__duplicate:hover, .pizza-box__delete:hover {
+:is(.pizza-box__duplicate, .pizza-box__delete):is(:hover, :focus) {
     opacity: 1;
+}
+
+.pizza-box__duplicate img, .pizza-box__delete img {
+    height: 100%;
 }
 
 .pizza-box__image {
@@ -83,7 +99,7 @@
 .pizza-box__info {
     display: flex;
     justify-content: space-between;
-    gap: 5px;
+    gap: 10px;
     white-space: nowrap;
 }
 
@@ -99,9 +115,8 @@
 
 .pizza-add {
     gap: 0;
-    min-height: 440px;
+    min-height: 440px; /* temp min pizza-box height */
     padding: 0;
-    cursor: pointer;
 }
 
 .pizza-add__plus, .pizza-add__button {
@@ -109,36 +124,40 @@
     display: grid;
     place-content: center;
     transition: all 1s;
-}
-
-.pizza-add__rectangular {
-    border-radius: 10px 10px 0 0;
+    cursor: pointer;
 }
 
 .pizza-add__circular {
+    order: 2;
     flex-grow: 2;
 }
 
+.pizza-add__rectangular {
+    order: 1;
+    border-radius: 10px 10px 0 0;
+}
+
 .pizza-add__slice {
+    order: 3;
     border-radius: 0 0 10px 10px;
 }
 
-.pizza-add:hover .pizza-add__plus,
-.pizza-add:not(:hover) .pizza-add__button {
+.pizza-add:is(:hover, :focus-within) .pizza-add__plus,
+.pizza-add:not(:hover, :focus-within) .pizza-add__button {
     display: none;
 }
 
-.pizza-add__button:hover {
+.pizza-add__button:is(:hover, :focus-within) {
     background-color: #0007;
     transition: none;
 }
 
-.pizza-add__button:not(:hover) {
+.pizza-add__button:not(:hover, :focus-within) {
     opacity: 0.5;
 }
 
 .pizza-add__button:active {
-    background-color: #000a;
+    background-color: #000b;
 }
 
 .pizza-add img {
