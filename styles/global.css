@@ -37,6 +37,10 @@ input[type=number] { /* Firefox */
     appearance: textfield;
 }
 
+input:invalid {
+    outline: 1px solid red;
+}
+
 :focus {
     outline: 1px solid white;
 }
