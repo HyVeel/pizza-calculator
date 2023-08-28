@@ -1,11 +1,11 @@
 @media (pointer: coarse) { /* touchscreen */
-    .pizza-box__id, .pizza-box__duplicate, .pizza-box__delete {
+    .pizza-box__id, .pizza-box__button {
         opacity: 0.5;
     }
 }
 
 @media not (pointer: coarse) {
-    .pizza-box__id, .pizza-box__duplicate, .pizza-box__delete {
+    .pizza-box__id, .pizza-box__button {
         opacity: 0;
     }
 }
@@ -17,7 +17,7 @@
     text-align: center;
     background-color: #0003;
     backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px); /* Safari */
+    -webkit-backdrop-filter: blur(5px);
 }
 
 #info-panel {
@@ -52,7 +52,7 @@
 }
 
 .pizza-box--best {
-    background-color: #000b;
+    background-color: #000c;
 }
 
 .pizza-box__id {
@@ -72,22 +72,22 @@
     gap: 10px;
 }
 
-.pizza-box__duplicate, .pizza-box__delete {
+.pizza-box__button {
     height: 1em;
     transition: all 0.5s;
     cursor: pointer;
 }
 
-.pizza-box:hover :where(.pizza-box__id, .pizza-box__duplicate, .pizza-box__delete) {
+.pizza-box:hover :where(.pizza-box__id, .pizza-box__button) {
     opacity: 0.5;
     transition: none;
 }
 
-:is(.pizza-box__duplicate, .pizza-box__delete):is(:hover, :focus) {
+.pizza-box__button:is(:hover, :focus) {
     opacity: 1;
 }
 
-.pizza-box__duplicate img, .pizza-box__delete img {
+.pizza-box__button img {
     height: 100%;
 }
 
@@ -148,7 +148,7 @@
 }
 
 .pizza-add__button:is(:hover, :focus-within) {
-    background-color: #0007;
+    background-color: #0009;
     transition: none;
 }
 
@@ -157,7 +157,7 @@
 }
 
 .pizza-add__button:active {
-    background-color: #000b;
+    background-color: #000c;
 }
 
 .pizza-add img {

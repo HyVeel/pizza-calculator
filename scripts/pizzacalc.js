@@ -6,7 +6,7 @@ class Pizza {
     constructor(shape, quantity, price, ...args) {
         pizzas.push(this)
         this.id = ++Pizza.counter
-        this.shape = validateShape(shape.toLowerCase())
+        this.shape = validateShape(shape)
         this.quantity = validateNumber(quantity)
         this.price = validateNumber(price)
 
@@ -77,10 +77,26 @@ class Pizza {
             if(data === undefined) exportData.pop()
             else break
         }
-        return exportData.map(data => data ?? "")
+        return exportData.map(data => data ?? "").join("_")
     }
 
     duplicatePizza() { importPizzas(this.export()) }
+
+    setRandomValues() {
+        this.setQuantity(getRandomIntiger(1, 3))
+        this.setPrice(getRandomIntiger(10, 30))
+
+        if(this.shape === "c") {
+            this.setDiameter(getRandomIntiger(20, 60))
+        } else if(this.shape === "r") {
+            this.setLength(getRandomIntiger(30, 60))
+            this.setWidth(getRandomIntiger(20, 40))
+        } else if(this.shape === "s") {
+            this.setSide(getRandomIntiger(10, 40))
+        }
+
+        this.updateBoxInputs()
+    }
 
     updateBoxInputs() {
         if(this.boxNode) {
@@ -138,10 +154,8 @@ function markBestPizzas() {
 
 function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".pizza-box--best")) box.classList.remove("pizza-box--best") }
 
-function addPizza(shape, ...args) {
-    if(!["c", "r", "s" ,"", undefined].includes(shape.toLowerCase())) return false
-    
-    const newPizza = new Pizza(shape.toLowerCase(), ...args)
+function addPizza(...args) {
+    const newPizza = new Pizza(...args)
     const newBox = document.createElement("div")
     newBox.className = "pizza-box"
     newBox.pizza = newPizza
@@ -220,11 +234,15 @@ function addPizza(shape, ...args) {
     <p class="pizza-box__id">#` + newPizza.id + `</p>
 
     <div class="pizza-box__buttons">
-        <button class="pizza-box__duplicate" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicatePizza(); this.blur()">
+        <button class="pizza-box__button" title="Randomize" tabindex="0" onclick="this.parentNode.parentNode.pizza.setRandomValues(); this.blur()">
+            <img src="images/icons/randomize.png">
+        </button>
+
+        <button class="pizza-box__button" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicatePizza(); this.blur()">
             <img src="images/icons/duplicate.png">
         </button>
 
-        <button class="pizza-box__delete" title="Delete" tabindex="0" onclick="this.parentNode.parentNode.pizza.delete()">
+        <button class="pizza-box__button" title="Delete" tabindex="0" onclick="this.parentNode.parentNode.pizza.delete()">
             <img src="images/icons/delete.png">
         </button>
     </div>`
@@ -232,19 +250,20 @@ function addPizza(shape, ...args) {
     hideInfoPanel()
     newPizza.updateBoxInputs()
     newPizza.updateBoxOutputs()
+    console.log(newPizza.export())//
 }
 
 const validateNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
-const validateShape = shape => ["c", "r", "s"].includes(shape) ? shape : "c" //default circular
+const validateShape = shape => ["c", "C", "r", "R", "s", "S"].includes(shape) ? shape.toLowerCase() : "c" //default circular
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.delete() }
-function importPizzas(pizzasData) { for(const pizzaData of pizzasData.toString().split("&")) addPizza(...pizzaData.split(",")) }
+function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split("&")) addPizza(...pizzaData.split("_")) }
 function importPizzasFromUrl() { if(location.search) importPizzas(location.search.slice(1)) }
 
 function exportPizzasToUrl() {
     const newUrl = new URL(location.origin + location.pathname)
-    for(const pizza of pizzas) newUrl.search += pizza.export().toString() + "&"
-    return(newUrl.href.slice(0, -1))
+    for(const pizza of pizzas) newUrl.search += (newUrl.search ? "&" : "") + pizza.export()
+    return newUrl.href
 }
 
 importPizzasFromUrl()
