@@ -62,15 +62,15 @@ class Pizza {
 
     setRandomValues() {
         this.setQuantity(getRandomIntiger(1, 3))
-        this.setPrice(getRandomIntiger(100, 300) / 10)
+        this.setPrice(getRandomIntiger(1000, 3000) / 100)
 
         if(this.shape === "c") {
-            this.setDiameter(getRandomIntiger(200, 600) / 10)
+            this.setDiameter(getRandomIntiger(2000, 6000) / 100)
         } else if(this.shape === "r") {
-            this.setLength(getRandomIntiger(300, 600) / 10)
-            this.setWidth(getRandomIntiger(200, 400) / 10)
+            this.setLength(getRandomIntiger(3000, 6000) / 100)
+            this.setWidth(getRandomIntiger(2000, 4000) / 100)
         } else if(this.shape === "s") {
-            this.setSide(getRandomIntiger(100, 400) / 10)
+            this.setSide(getRandomIntiger(1000, 4000) / 100)
         }
 
         this.updateBoxInputs()
@@ -95,7 +95,7 @@ class Pizza {
         if(newURL) navigator.clipboard.writeText(newURL)
     }
 
-    duplicatePizza() { importPizzas(this.exportData()) }
+    duplicate() { importPizzas(this.exportData()) }
 
     delete() {
         this.boxNode.remove()
@@ -249,7 +249,7 @@ function addPizza(shape, ...args) {
             <img src="images/icons/link.png">
         </button>
 
-        <button class="pizza-box__button" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicatePizza(); this.blur()">
+        <button class="pizza-box__button" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicate(); this.blur()">
             <img src="images/icons/duplicate.png">
         </button>
 
@@ -261,7 +261,6 @@ function addPizza(shape, ...args) {
     hideInfoPanel()
     newPizza.updateBoxInputs()
     newPizza.updateBoxOutputs()
-    console.log(newPizza.exportData())//
 }
 
 const isValidShape = shape => ["c", "C", "r", "R", "s", "S"].includes(shape) ? shape.toLowerCase() : undefined
