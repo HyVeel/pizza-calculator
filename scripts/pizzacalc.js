@@ -6,41 +6,41 @@ class Pizza {
     constructor(shape, quantity, price, ...args) {
         pizzas.push(this)
         this.id = ++Pizza.counter
-        this.shape = validateShape(shape)
-        this.quantity = validateNumber(quantity)
-        this.price = validateNumber(price)
+        this.shape = isValidShape(shape) ?? "c" //default circular
+        this.quantity = isValidNumber(quantity)
+        this.price = isValidNumber(price)
 
         if(this.shape === "c") {
-            this.diameter = validateNumber(args[0])
+            this.diameter = isValidNumber(args[0])
             this.calcArea = () => Math.PI * (this.diameter / 2) ** 2
             this.calcSlicePrice = () => this.price / 8
 
             this.setDiameter = diameter => {
-                this.diameter = validateNumber(diameter)
+                this.diameter = isValidNumber(diameter)
                 this.updateBoxOutputs()
             }
         } else if(this.shape === "r") {
-            this.length = validateNumber(args[0])
-            this.width = validateNumber(args[1])
+            this.length = isValidNumber(args[0])
+            this.width = isValidNumber(args[1])
             this.calcArea = () => this.length * this.width
 
             this.setLength = length => {
-                this.length = validateNumber(length)
+                this.length = isValidNumber(length)
                 this.updateBoxOutputs()
             }
 
             this.setWidth = width => {
-                this.width = validateNumber(width)
+                this.width = isValidNumber(width)
                 this.updateBoxOutputs()
             }
         } else if(this.shape === "s") {
-            this.side = validateNumber(args[0])
+            this.side = isValidNumber(args[0])
             this.calcArea = () => Math.PI * this.side ** 2 / 8
             this.calcPizzaArea = () => this.calcArea() * 8
             this.calcPizzaPrice = () => this.price * 8
 
             this.setSide = side => {
-                this.side = validateNumber(side)
+                this.side = isValidNumber(side)
                 this.updateBoxOutputs()
             }
         }
@@ -51,12 +51,12 @@ class Pizza {
     calcPricePerCm2 = () => this.price * this.quantity / this.calcTotalArea() * 100 //cents
 
     setQuantity(quantity) {
-        this.quantity = validateNumber(quantity)
+        this.quantity = isValidNumber(quantity)
         this.updateBoxOutputs()
     }
 
     setPrice(price) {
-        this.price = validateNumber(price)
+        this.price = isValidNumber(price)
         this.updateBoxOutputs()
     }
 
@@ -154,8 +154,10 @@ function markBestPizzas() {
 
 function removeBestPizzaMarks() { for(const box of document.querySelectorAll(".pizza-box--best")) box.classList.remove("pizza-box--best") }
 
-function addPizza(...args) {
-    const newPizza = new Pizza(...args)
+function addPizza(shape, ...args) {
+    if(!isValidShape(shape)) return false
+
+    const newPizza = new Pizza(shape, ...args)
     const newBox = document.createElement("div")
     newBox.className = "pizza-box"
     newBox.pizza = newPizza
@@ -252,17 +254,21 @@ function addPizza(...args) {
     newPizza.updateBoxOutputs()
 }
 
-const validateNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
-const validateShape = shape => ["c", "C", "r", "R", "s", "S"].includes(shape) ? shape.toLowerCase() : "c" //default circular
+const isValidShape = shape => ["c", "C", "r", "R", "s", "S"].includes(shape) ? shape.toLowerCase() : undefined
+const isValidNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.delete() }
-function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split("&")) addPizza(...pizzaData.split("_")) }
-function importPizzasFromUrl() { if(location.search) importPizzas(location.search.slice(1)) }
+function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split(" ")) addPizza(...pizzaData.split("_")) }
 
 function exportPizzasToUrl() {
     const newUrl = new URL(location.origin + location.pathname)
-    for(const pizza of pizzas) newUrl.search += (newUrl.search ? "&" : "") + pizza.export()
-    return newUrl.href
+    for(const pizza of pizzas) newUrl.search += (newUrl.search ? "+" : "pizzas=") + pizza.export()
+    return encodeURI(newUrl.href)
 }
 
-importPizzasFromUrl()
+function importPizzasFromUrl(url) {
+    const newUrl = new URL(decodeURIComponent(url))
+    if(newUrl.search.includes("pizzas")) importPizzas(newUrl.searchParams.get("pizzas"))
+}
+
+importPizzasFromUrl(location.href)
