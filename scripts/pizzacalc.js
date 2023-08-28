@@ -250,7 +250,6 @@ function addPizza(...args) {
     hideInfoPanel()
     newPizza.updateBoxInputs()
     newPizza.updateBoxOutputs()
-    console.log(newPizza.export())//
 }
 
 const validateNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
