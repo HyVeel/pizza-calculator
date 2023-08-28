@@ -69,7 +69,7 @@
     position: absolute;
     align-self: flex-end;
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .pizza-box__button {

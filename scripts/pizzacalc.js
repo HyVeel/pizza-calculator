@@ -60,13 +60,23 @@ class Pizza {
         this.updateBoxOutputs()
     }
 
-    delete() {
-        this.boxNode.remove()
-        pizzas.splice(pizzas.indexOf(this), 1)
-        markBestPizzas()
+    setRandomValues() {
+        this.setQuantity(getRandomIntiger(1, 3))
+        this.setPrice(getRandomIntiger(1000, 3000) / 100)
+
+        if(this.shape === "c") {
+            this.setDiameter(getRandomIntiger(2000, 6000) / 100)
+        } else if(this.shape === "r") {
+            this.setLength(getRandomIntiger(3000, 6000) / 100)
+            this.setWidth(getRandomIntiger(2000, 4000) / 100)
+        } else if(this.shape === "s") {
+            this.setSide(getRandomIntiger(1000, 4000) / 100)
+        }
+
+        this.updateBoxInputs()
     }
 
-    export() {
+    exportData() {
         const exportData = [this.shape, this.quantity, this.price]
         if(this.shape === "c") exportData.push(this.diameter)
         else if(this.shape === "r") exportData.push(this.length, this.width)
@@ -80,22 +90,17 @@ class Pizza {
         return exportData.map(data => data ?? "").join("_")
     }
 
-    duplicatePizza() { importPizzas(this.export()) }
+    exportToUrl() {
+        const newURL = prompt("Click OK to copy", encodeURI(location.origin + location.pathname + "?pizzas=" + this.exportData()))
+        if(newURL) navigator.clipboard.writeText(newURL)
+    }
 
-    setRandomValues() {
-        this.setQuantity(getRandomIntiger(1, 3))
-        this.setPrice(getRandomIntiger(10, 30))
+    duplicate() { importPizzas(this.exportData()) }
 
-        if(this.shape === "c") {
-            this.setDiameter(getRandomIntiger(20, 60))
-        } else if(this.shape === "r") {
-            this.setLength(getRandomIntiger(30, 60))
-            this.setWidth(getRandomIntiger(20, 40))
-        } else if(this.shape === "s") {
-            this.setSide(getRandomIntiger(10, 40))
-        }
-
-        this.updateBoxInputs()
+    delete() {
+        this.boxNode.remove()
+        pizzas.splice(pizzas.indexOf(this), 1)
+        markBestPizzas()
     }
 
     updateBoxInputs() {
@@ -174,14 +179,14 @@ function addPizza(shape, ...args) {
 
     <div class="pizza-box__info">
         <p>Price [&#36;]</p>
-        <input class="pizza-box__price" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
+        <input class="pizza-box__price" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
     if(newPizza.shape === "c") {
         newBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Diameter [cm]</p>
-            <input class="pizza-box__diameter" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setDiameter(this.value)">
+            <input class="pizza-box__diameter" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setDiameter(this.value)">
         </div>
 
         <div class="pizza-box__info">
@@ -192,18 +197,18 @@ function addPizza(shape, ...args) {
         newBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Length [cm]</p>
-            <input class="pizza-box__length" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setLength(this.value)">
+            <input class="pizza-box__length" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setLength(this.value)">
         </div>
 
         <div class="pizza-box__info">
             <p>Width [cm]</p>
-            <input class="pizza-box__width" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
+            <input class="pizza-box__width" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
         </div>`
     } else if(newPizza.shape === "s") {
         newBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Side [cm]</p>
-            <input class="pizza-box__side" type="number" min="0" placeholder="0" oninput="this.parentNode.parentNode.pizza.setSide(this.value)">
+            <input class="pizza-box__side" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setSide(this.value)">
         </div>
 
         <div class="pizza-box__info">
@@ -240,7 +245,11 @@ function addPizza(shape, ...args) {
             <img src="images/icons/randomize.png">
         </button>
 
-        <button class="pizza-box__button" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicatePizza(); this.blur()">
+        <button class="pizza-box__button" title="Generate URL" tabindex="0" onclick="this.parentNode.parentNode.pizza.exportToUrl(); this.blur()">
+            <img src="images/icons/link.png">
+        </button>
+
+        <button class="pizza-box__button" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicate(); this.blur()">
             <img src="images/icons/duplicate.png">
         </button>
 
@@ -262,7 +271,7 @@ function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split(" ")
 
 function exportPizzasToUrl() {
     const newUrl = new URL(location.origin + location.pathname)
-    for(const pizza of pizzas) newUrl.search += (newUrl.search ? "+" : "pizzas=") + pizza.export()
+    for(const pizza of pizzas) newUrl.search += (newUrl.search ? "+" : "pizzas=") + pizza.exportData()
     return encodeURI(newUrl.href)
 }
 
