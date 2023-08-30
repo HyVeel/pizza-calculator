@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <p id="title-panel">🍕 Which pizza is the best choice?</p>
+    <p id="title-panel"><a href=".">🍕</a> Which pizza is the best choice?</p>
     <p id="info-panel">To add a new pizza hover over the + below and select its shape!</p>
 
     <div id="main">
@@ -24,15 +24,15 @@
                 <img src="images/plus.png" alt="Add pizza">
             </div>
 
-            <button class="pizza-add__circular pizza-add__button" onclick="addPizza('c', 1); this.blur()">
+            <button class="pizza-add__circular pizza-add__button" onclick="addPizza('c', '', 1); this.blur()">
                 <img src="images/c-pizza.png" alt="Circular pizza">
             </button>
 
-            <button class="pizza-add__rectangular pizza-add__button" onclick="addPizza('r', 1); this.blur()">
+            <button class="pizza-add__rectangular pizza-add__button" onclick="addPizza('r', '', 1); this.blur()">
                 <img src="images/r-pizza.png" alt="Rectangular pizza">
             </button>
 
-            <button class="pizza-add__slice pizza-add__button" onclick="addPizza('s', 1); this.blur()">
+            <button class="pizza-add__slice pizza-add__button" onclick="addPizza('s', '', 1); this.blur()">
                 <img src="images/s-pizza.png" alt="Slice of pizza">
             </button>
         </div>

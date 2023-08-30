@@ -3,10 +3,11 @@ const pizzas = []
 class Pizza {
     static counter = 0
 
-    constructor(shape, quantity, price, ...args) {
+    constructor(shape, name, quantity, price, ...args) {
         pizzas.push(this)
         this.id = ++Pizza.counter
         this.shape = isValidShape(shape) ?? "c" //default circular
+        this.name = isValidName(name)
         this.quantity = isValidNumber(quantity)
         this.price = isValidNumber(price)
 
@@ -14,35 +15,15 @@ class Pizza {
             this.diameter = isValidNumber(args[0])
             this.calcArea = () => Math.PI * (this.diameter / 2) ** 2
             this.calcSlicePrice = () => this.price / 8
-
-            this.setDiameter = diameter => {
-                this.diameter = isValidNumber(diameter)
-                this.updateBoxOutputs()
-            }
         } else if(this.shape === "r") {
             this.length = isValidNumber(args[0])
             this.width = isValidNumber(args[1])
             this.calcArea = () => this.length * this.width
-
-            this.setLength = length => {
-                this.length = isValidNumber(length)
-                this.updateBoxOutputs()
-            }
-
-            this.setWidth = width => {
-                this.width = isValidNumber(width)
-                this.updateBoxOutputs()
-            }
         } else if(this.shape === "s") {
             this.side = isValidNumber(args[0])
             this.calcArea = () => Math.PI * this.side ** 2 / 8
             this.calcPizzaArea = () => this.calcArea() * 8
             this.calcPizzaPrice = () => this.price * 8
-
-            this.setSide = side => {
-                this.side = isValidNumber(side)
-                this.updateBoxOutputs()
-            }
         }
     }
 
@@ -50,14 +31,39 @@ class Pizza {
     calcTotalPrice = () => this.price * this.quantity
     calcPricePerCm2 = () => this.price * this.quantity / this.calcTotalArea() * 100 //cents
 
+    setName(name) {
+        this.name = isValidName(name)
+        this.update(true, false, false)
+    }
+
     setQuantity(quantity) {
         this.quantity = isValidNumber(quantity)
-        this.updateBoxOutputs()
+        this.update()
     }
 
     setPrice(price) {
         this.price = isValidNumber(price)
-        this.updateBoxOutputs()
+        this.update()
+    }
+
+    setDiameter(diameter) {
+        this.diameter = isValidNumber(diameter)
+        this.update()
+    }
+
+    setLength(length) {
+        this.length = isValidNumber(length)
+        this.update()
+    }
+
+    setWidth(width) {
+        this.width = isValidNumber(width)
+        this.update()
+    }
+
+    setSide(side) {
+        this.side = isValidNumber(side)
+        this.update()
     }
 
     setRandomValues() {
@@ -70,24 +76,23 @@ class Pizza {
             this.setLength(getRandomIntiger(3000, 6000) / 100)
             this.setWidth(getRandomIntiger(2000, 4000) / 100)
         } else if(this.shape === "s") {
+            this.setPrice((this.price / 8).toFixed(2))
             this.setSide(getRandomIntiger(1000, 4000) / 100)
         }
-
-        this.updateBoxInputs()
+        this.update(true)
     }
 
     exportData() {
-        const exportData = [this.shape, this.quantity, this.price]
+        const exportData = [this.shape, this.name, this.quantity, this.price]
         if(this.shape === "c") exportData.push(this.diameter)
         else if(this.shape === "r") exportData.push(this.length, this.width)
         else if(this.shape === "s") exportData.push(this.side)
 
-        //removing undefined from the end till a value is encountered, changing rest to ""
-        for(const data of exportData.toReversed()) {
+        for(const data of exportData.toReversed()) { //removing undefined from the end till a value is encountered
             if(data === undefined) exportData.pop()
             else break
         }
-        return exportData.map(data => data ?? "").join("_")
+        return exportData.join("_")
     }
 
     exportToUrl() {
@@ -95,16 +100,27 @@ class Pizza {
         if(newURL) navigator.clipboard.writeText(newURL)
     }
 
-    duplicate() { importPizzas(this.exportData()) }
-
     delete() {
         this.boxNode.remove()
         pizzas.splice(pizzas.indexOf(this), 1)
-        markBestPizzas()
+        this.update(false, false)
+    }
+
+    duplicate() { importPizzas(this.exportData()) }
+    showName() { this.boxNode.querySelector(".pizza-box__name").style.display = "block" }
+    hideName() { this.boxNode.querySelector(".pizza-box__name").style.display = "none" }
+
+    toggleName() {
+        if(this.boxNode.querySelector(".pizza-box__name").style.display === "block") {
+            this.setName()
+            this.hideName()
+        } else this.showName()
     }
 
     updateBoxInputs() {
         if(this.boxNode) {
+            if(this.name) this.showName()
+            this.boxNode.querySelector(".pizza-box__name").value = this.name ?? ""
             this.boxNode.querySelector(".pizza-box__quantity").value = this.quantity ?? ""
             this.boxNode.querySelector(".pizza-box__price").value = this.price ?? ""
 
@@ -127,8 +143,16 @@ class Pizza {
                 this.boxNode.querySelector(".pizza-box__pizza-area").innerText = this.calcPizzaArea() ? this.calcPizzaArea().toFixed(2) : ""
                 this.boxNode.querySelector(".pizza-box__pizza-price").innerText = this.calcPizzaPrice() ? this.calcPizzaPrice().toFixed(2) : ""
             }
-            markBestPizzas()
         }
+    }
+
+    update(updateInputs = false, updateOutputs = true, markPizzas = true, setUrl = true) {
+        if(updateInputs) this.updateBoxInputs()
+        if(updateOutputs) this.updateBoxOutputs()
+        if(markPizzas) markBestPizzas()
+        if(setUrl) setUrlWithPizzas()
+        //console.clear()//
+        //pizzas.forEach(p => console.log(p.exportData()))//
     }
 }
 
@@ -138,7 +162,7 @@ function findBestPizzas() {
         if(!isFinite(pizza.calcPricePerCm2())) continue
         else if(!best[0]) best.push(pizza)
         else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2()) {
-            best.length = 0
+            best.length = 0 //clearing array
             best.push(pizza)
         } else if(pizza.calcPricePerCm2() === best[0].calcPricePerCm2()) {
             if(pizza.calcPricePerCm2() === 0) {
@@ -171,6 +195,7 @@ function addPizza(shape, ...args) {
 
     newBox.innerHTML += `
     <img class="pizza-box__image" src="images/` + newPizza.shape + `-pizza.png">
+    <input class="pizza-box__name" type="text" placeholder="Pizza name" oninput="this.parentNode.pizza.setName(this.value)">
 
     <div class="pizza-box__info">
         <p>Quantity</p>
@@ -241,6 +266,10 @@ function addPizza(shape, ...args) {
     <p class="pizza-box__id">#` + newPizza.id + `</p>
 
     <div class="pizza-box__buttons">
+        <button class="pizza-box__button" title="Add/remove name" tabindex="0" onclick="this.parentNode.parentNode.pizza.toggleName(); this.blur()">
+            <img src="images/icons/edit.png">
+        </button>
+
         <button class="pizza-box__button" title="Randomize" tabindex="0" onclick="this.parentNode.parentNode.pizza.setRandomValues(); this.blur()">
             <img src="images/icons/randomize.png">
         </button>
@@ -259,15 +288,16 @@ function addPizza(shape, ...args) {
     </div>`
 
     hideInfoPanel()
-    newPizza.updateBoxInputs()
-    newPizza.updateBoxOutputs()
+    newPizza.update(true)
 }
 
 const isValidShape = shape => ["c", "C", "r", "R", "s", "S"].includes(shape) ? shape.toLowerCase() : undefined
+const isValidName = name => name ? name.trim().replaceAll(" ", "-") : undefined
 const isValidNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.delete() }
 function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split(" ")) addPizza(...pizzaData.split("_")) }
+function setUrlWithPizzas() { history.replaceState({}, "", exportPizzasToUrl()) } //sets new url in address bar without loading it
 
 function exportPizzasToUrl() {
     const newUrl = new URL(location.origin + location.pathname)
@@ -281,3 +311,4 @@ function importPizzasFromUrl(url) {
 }
 
 importPizzasFromUrl(location.href)
+//history.pushState({}, "") //adds new entry to history so it is possible to restore base url after changes
