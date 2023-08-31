@@ -118,7 +118,7 @@ class Pizza {
 
     duplicate() { importPizzas(this.exportData()) }
 
-    toggleExclusion() { //exclude from finding best pizzza
+    toggleExclusion() { //exclude from finding best
         this.boxNode.classList.toggle("pizza-box--exclude")
         this.update(false, false)
     }
@@ -200,6 +200,7 @@ function addPizza(shape, ...args) {
     newBox.innerHTML += `
     <div class="pizza-box__options-bar">
         <p class="pizza-box__id">#${newPizza.id}</p>
+        <img class="pizza-box__best" title="Best choice!" src="images/icons/best.png">
 
         <button class="pizza-box__button" title="Add/remove name" onclick="this.parentNode.parentNode.pizza.toggleName(); this.blur()">
             <img src="images/icons/edit.png">

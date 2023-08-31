@@ -66,13 +66,19 @@
 }
 
 .pizza-box__id {
-    margin-right: auto;
     font-style: italic;
     transition: all 0.5s;
 }
 
 .pizza-box--best .pizza-box__id {
     opacity: 0.5;
+}
+
+.pizza-box__best {
+    height: 1em;
+    margin-right: auto;
+    opacity: 0;
+    transition: all 0.5s;
 }
 
 .pizza-box__button {
@@ -86,7 +92,9 @@
     transition: none;
 }
 
-.pizza-box__button:is(:hover, :focus), .pizza-box--exclude .pizza-box__compare {
+.pizza-box__button:is(:hover, :focus),
+.pizza-box--best .pizza-box__best,
+.pizza-box--exclude .pizza-box__compare {
     opacity: 1;
 }
 
