@@ -118,7 +118,7 @@ class Pizza {
 
     duplicate() { importPizzas(this.exportData()) }
 
-    toggleExclusion() { //exclude from finding best
+    toggleExclusion() { //exclude from finding best pizzza
         this.boxNode.classList.toggle("pizza-box--exclude")
         this.update(false, false)
     }
