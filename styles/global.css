@@ -21,10 +21,14 @@ body {
     color: white;
 }
 
+a {
+    text-decoration: none;
+}
+
 input, button {
     font: inherit;
     color: inherit;
-    background-color: inherit;
+    background-color: transparent;
     border: none;
 }
 
