@@ -11,15 +11,15 @@ class Pizza {
         this.quantity = isValidNumber(quantity)
         this.price = isValidNumber(price)
 
-        if(this.shape === "c") {
+        if(this.shape == "c") {
             this.diameter = isValidNumber(args[0])
             this.calcArea = () => Math.PI * (this.diameter / 2) ** 2
             this.calcSlicePrice = () => this.price / 8
-        } else if(this.shape === "r") {
+        } else if(this.shape == "r") {
             this.length = isValidNumber(args[0])
             this.width = isValidNumber(args[1])
             this.calcArea = () => this.length * this.width
-        } else if(this.shape === "s") {
+        } else if(this.shape == "s") {
             this.side = isValidNumber(args[0])
             this.calcArea = () => Math.PI * this.side ** 2 / 8
             this.calcPizzaArea = () => this.calcArea() * 8
@@ -30,10 +30,20 @@ class Pizza {
     calcTotalArea = () => this.calcArea() * this.quantity
     calcTotalPrice = () => this.price * this.quantity
     calcPricePerCm2 = () => this.price * this.quantity / this.calcTotalArea() * 100 //cents
+    showName() { this.boxNode.querySelector(".pizza-box__name").style.display = "block" }
+    hideName() { this.boxNode.querySelector(".pizza-box__name").style.display = "none" }
+
+    toggleName() {
+        if(this.boxNode.querySelector(".pizza-box__name").style.display == "block") {
+            this.setName()
+            this.hideName()
+            this.update(true, false, false, false)
+        } else this.showName()
+    }
 
     setName(name) {
         this.name = isValidName(name)
-        this.update(true, false, false)
+        this.update(false, false, false)
     }
 
     setQuantity(quantity) {
@@ -70,12 +80,12 @@ class Pizza {
         this.setQuantity(getRandomIntiger(1, 3))
         this.setPrice(getRandomIntiger(1000, 3000) / 100)
 
-        if(this.shape === "c") {
+        if(this.shape == "c") {
             this.setDiameter(getRandomIntiger(2000, 6000) / 100)
-        } else if(this.shape === "r") {
+        } else if(this.shape == "r") {
             this.setLength(getRandomIntiger(3000, 6000) / 100)
             this.setWidth(getRandomIntiger(2000, 4000) / 100)
-        } else if(this.shape === "s") {
+        } else if(this.shape == "s") {
             this.setPrice((this.price / 8).toFixed(2))
             this.setSide(getRandomIntiger(1000, 4000) / 100)
         }
@@ -84,9 +94,9 @@ class Pizza {
 
     exportData() {
         const exportData = [this.shape, this.name, this.quantity, this.price]
-        if(this.shape === "c") exportData.push(this.diameter)
-        else if(this.shape === "r") exportData.push(this.length, this.width)
-        else if(this.shape === "s") exportData.push(this.side)
+        if(this.shape == "c") exportData.push(this.diameter)
+        else if(this.shape == "r") exportData.push(this.length, this.width)
+        else if(this.shape == "s") exportData.push(this.side)
 
         for(const data of exportData.toReversed()) { //removing undefined from the end till a value is encountered
             if(data === undefined) exportData.pop()
@@ -107,41 +117,37 @@ class Pizza {
     }
 
     duplicate() { importPizzas(this.exportData()) }
-    showName() { this.boxNode.querySelector(".pizza-box__name").style.display = "block" }
-    hideName() { this.boxNode.querySelector(".pizza-box__name").style.display = "none" }
 
-    toggleName() {
-        if(this.boxNode.querySelector(".pizza-box__name").style.display === "block") {
-            this.setName()
-            this.hideName()
-        } else this.showName()
+    toggleExclusion() { //exclude from finding best
+        this.boxNode.classList.toggle("pizza-box--exclude")
+        this.update(false, false)
     }
 
     updateBoxInputs() {
         if(this.boxNode) {
             if(this.name) this.showName()
-            this.boxNode.querySelector(".pizza-box__name").value = this.name ?? ""
+            this.boxNode.querySelector(".pizza-box__name").value = this.name ? this.name.replaceAll("-", " ") : ""
             this.boxNode.querySelector(".pizza-box__quantity").value = this.quantity ?? ""
             this.boxNode.querySelector(".pizza-box__price").value = this.price ?? ""
 
-            if(this.shape === "c") this.boxNode.querySelector(".pizza-box__diameter").value = this.diameter ?? ""
-            else if(this.shape === "r") {
+            if(this.shape == "c") this.boxNode.querySelector(".pizza-box__diameter").value = this.diameter ?? ""
+            else if(this.shape == "r") {
                 this.boxNode.querySelector(".pizza-box__length").value = this.length ?? ""
                 this.boxNode.querySelector(".pizza-box__width").value = this.width ?? ""
-            } else if(this.shape === "s") this.boxNode.querySelector(".pizza-box__side").value = this.side ?? ""
+            } else if(this.shape == "s") this.boxNode.querySelector(".pizza-box__side").value = this.side ?? ""
         }
     }
 
     updateBoxOutputs() {
         if(this.boxNode) {
-            this.boxNode.querySelector(".pizza-box__total-area").innerText = this.calcTotalArea() ? this.calcTotalArea().toFixed(2) : ""
-            this.boxNode.querySelector(".pizza-box__total-price").innerText = this.calcTotalPrice() ? this.calcTotalPrice().toFixed(2) : ""
-            this.boxNode.querySelector(".pizza-box__price-cm2").innerText = this.calcPricePerCm2() ? this.calcPricePerCm2().toFixed(2) : ""
+            this.boxNode.querySelector(".pizza-box__total-area").innerText = isValidNumber(this.calcTotalArea().toFixed(2)) ?? ""
+            this.boxNode.querySelector(".pizza-box__total-price").innerText = isValidNumber(this.calcTotalPrice().toFixed(2)) ?? ""
+            this.boxNode.querySelector(".pizza-box__price-cm2").innerText = isValidNumber(this.calcPricePerCm2().toFixed(2)) ?? ""
 
-            if(this.shape === "c") this.boxNode.querySelector(".pizza-box__slice-price").innerText = this.calcSlicePrice() ? this.calcSlicePrice().toFixed(2) : ""
-            else if(this.shape === "s") {
-                this.boxNode.querySelector(".pizza-box__pizza-area").innerText = this.calcPizzaArea() ? this.calcPizzaArea().toFixed(2) : ""
-                this.boxNode.querySelector(".pizza-box__pizza-price").innerText = this.calcPizzaPrice() ? this.calcPizzaPrice().toFixed(2) : ""
+            if(this.shape == "c") this.boxNode.querySelector(".pizza-box__slice-price").innerText = isValidNumber(this.calcSlicePrice().toFixed(2)) ?? ""
+            else if(this.shape == "s") {
+                this.boxNode.querySelector(".pizza-box__pizza-area").innerText = isValidNumber(this.calcPizzaArea().toFixed(2)) ?? ""
+                this.boxNode.querySelector(".pizza-box__pizza-price").innerText = isValidNumber(this.calcPizzaPrice().toFixed(2)) ?? ""
             }
         }
     }
@@ -151,15 +157,13 @@ class Pizza {
         if(updateOutputs) this.updateBoxOutputs()
         if(markPizzas) markBestPizzas()
         if(setUrl) setUrlWithPizzas()
-        //console.clear()//
-        //pizzas.forEach(p => console.log(p.exportData()))//
     }
 }
 
 function findBestPizzas() {
     const best = []
     for(const pizza of pizzas) {
-        if(!isFinite(pizza.calcPricePerCm2())) continue
+        if(!isValidNumber(pizza.calcPricePerCm2()) || pizza.boxNode.classList.contains(("pizza-box--exclude"))) continue
         else if(!best[0]) best.push(pizza)
         else if(pizza.calcPricePerCm2() < best[0].calcPricePerCm2()) {
             best.length = 0 //clearing array
@@ -194,7 +198,35 @@ function addPizza(shape, ...args) {
     newPizza.boxNode = newBox
 
     newBox.innerHTML += `
-    <img class="pizza-box__image" src="images/` + newPizza.shape + `-pizza.png">
+    <div class="pizza-box__options-bar">
+        <p class="pizza-box__id">#${newPizza.id}</p>
+
+        <button class="pizza-box__button" title="Add/remove name" onclick="this.parentNode.parentNode.pizza.toggleName(); this.blur()">
+            <img src="images/icons/edit.png">
+        </button>
+
+        <button class="pizza-box__button" title="Randomize" onclick="this.parentNode.parentNode.pizza.setRandomValues(); this.blur()">
+            <img src="images/icons/randomize.png">
+        </button>
+
+        <button class="pizza-box__button" title="Generate URL" onclick="this.parentNode.parentNode.pizza.exportToUrl(); this.blur()">
+            <img src="images/icons/link.png">
+        </button>
+
+        <button class="pizza-box__button pizza-box__compare" title="Exclude/include in comparison" onclick="this.parentNode.parentNode.pizza.toggleExclusion(); this.blur()">
+            <img src="images/icons/compare.png">
+        </button>
+
+        <button class="pizza-box__button" title="Duplicate" onclick="this.parentNode.parentNode.pizza.duplicate(); this.blur()">
+            <img src="images/icons/duplicate.png">
+        </button>
+
+        <button class="pizza-box__button" title="Delete" onclick="this.parentNode.parentNode.pizza.delete()">
+            <img src="images/icons/delete.png">
+        </button>
+    </div>
+    
+    <img class="pizza-box__image" src="images/${newPizza.shape}-pizza.png">
     <input class="pizza-box__name" type="text" placeholder="Pizza name" oninput="this.parentNode.pizza.setName(this.value)">
 
     <div class="pizza-box__info">
@@ -207,7 +239,7 @@ function addPizza(shape, ...args) {
         <input class="pizza-box__price" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
-    if(newPizza.shape === "c") {
+    if(newPizza.shape == "c") {
         newBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Diameter [cm]</p>
@@ -218,7 +250,7 @@ function addPizza(shape, ...args) {
             <p>Slice price [&#36;]</p>
             <p class="pizza-box__output pizza-box__slice-price"></p>
         </div>`
-    } else if(newPizza.shape === "r") {
+    } else if(newPizza.shape == "r") {
         newBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Length [cm]</p>
@@ -229,7 +261,7 @@ function addPizza(shape, ...args) {
             <p>Width [cm]</p>
             <input class="pizza-box__width" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
         </div>`
-    } else if(newPizza.shape === "s") {
+    } else if(newPizza.shape == "s") {
         newBox.innerHTML += `
         <div class="pizza-box__info">
             <p>Side [cm]</p>
@@ -261,33 +293,9 @@ function addPizza(shape, ...args) {
     <div class="pizza-box__info">
         <p>Price per cm&#178; [&#162;]</p>
         <p class="pizza-box__output pizza-box__price-cm2"></p>
-    </div>
-
-    <p class="pizza-box__id">#` + newPizza.id + `</p>
-
-    <div class="pizza-box__buttons">
-        <button class="pizza-box__button" title="Add/remove name" tabindex="0" onclick="this.parentNode.parentNode.pizza.toggleName(); this.blur()">
-            <img src="images/icons/edit.png">
-        </button>
-
-        <button class="pizza-box__button" title="Randomize" tabindex="0" onclick="this.parentNode.parentNode.pizza.setRandomValues(); this.blur()">
-            <img src="images/icons/randomize.png">
-        </button>
-
-        <button class="pizza-box__button" title="Generate URL" tabindex="0" onclick="this.parentNode.parentNode.pizza.exportToUrl(); this.blur()">
-            <img src="images/icons/link.png">
-        </button>
-
-        <button class="pizza-box__button" title="Duplicate" tabindex="0" onclick="this.parentNode.parentNode.pizza.duplicate(); this.blur()">
-            <img src="images/icons/duplicate.png">
-        </button>
-
-        <button class="pizza-box__button" title="Delete" tabindex="0" onclick="this.parentNode.parentNode.pizza.delete()">
-            <img src="images/icons/delete.png">
-        </button>
     </div>`
 
-    hideInfoPanel()
+    hideInfoBar()
     newPizza.update(true)
 }
 
@@ -311,4 +319,3 @@ function importPizzasFromUrl(url) {
 }
 
 importPizzasFromUrl(location.href)
-//history.pushState({}, "") //adds new entry to history so it is possible to restore base url after changes
