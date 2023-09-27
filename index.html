@@ -20,12 +20,10 @@
     </button>
 
     <div id="options" class="no-display">
-        <button class="options__option" onclick="this.blur()">Add multiple same pizzas</button>
         <button class="options__option" onclick="this.blur(); setRandomValuesToAllPizzas()">Randomize values for all pizzas</button>
-        <button class="options__option" onclick="this.blur(); if(confirm('Do you really want to delete all pizzas?')) deleteAllPizzas()">Delete all pizzas</button>
-        <button class="options__option" onclick="this.blur()">Pizzas history</button>
-        <button class="options__option" onclick="this.blur(); openCopyBox(exportPizzasToUrl())">Generate URL with all pizzas</button>
-        <button class="options__option" onclick="this.blur(); openImportFromUrlBox()">Import pizzas from URL</button>
+        <button class="options__option" onclick="this.blur(); openDeleteAllPizzasBox()">Delete all pizzas</button>
+        <button class="options__option" onclick="this.blur(); openCopyBox(exportAllPizzasToUrl())">Generate URL with all pizzas</button>
+        <button class="options__option" onclick="this.blur(); openImportPizzasFromUrlBox()">Import pizzas from URL</button>
         <button class="options__option" onclick="this.blur(); openSetTitleBox()">Set title</button>
         <button class="options__option" onclick="this.blur(); window.open('https://github.com/HyVeel', '_blank')">GitHub</button>
     </div>
