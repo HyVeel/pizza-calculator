@@ -4,7 +4,7 @@
     }
 }
 
-@media not (pointer: coarse) { /* not touchscreen */
+@media not (pointer: coarse) { /* no touchscreen */
     .pizza-box__id, .pizza-box__button {
         opacity: 0;
     }
@@ -29,10 +29,10 @@
 
 /* Options */
 #options__button {
-    z-index: 10;
     position: fixed;
     top: 20px;
     right: 20px;
+    z-index: 10;
     height: 50px;
     cursor: pointer;
 }
@@ -46,18 +46,22 @@
 }
 
 #options {
-    z-index: 9;
     position: fixed;
     inset: 0;
+    z-index: 9;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    max-height: 100vh;
+    overflow-y: auto;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
 
 .options__option {
-    place-content: center;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
     padding: 20px;
     font-size: 1.5em;
     cursor: pointer;
@@ -69,6 +73,10 @@
 
 .options__option:active {
     background-color: #000c;
+}
+
+.options__option img {
+    height: 1em;
 }
 
 /* Pizza box */

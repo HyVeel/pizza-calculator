@@ -13,15 +13,15 @@ class Pizza {
         this.quantity = validateNumber(quantity)
         this.price = validateNumber(price)
 
-        if(this.shape == "c") {
+        if(this.shape === "c") {
             this.diameter = validateNumber(args[0])
             this.calcArea = () => Math.PI * (this.diameter / 2) ** 2
             this.calcSlicePrice = () => this.price / 8
-        } else if(this.shape == "r") {
+        } else if(this.shape === "r") {
             this.length = validateNumber(args[0])
             this.width = validateNumber(args[1])
             this.calcArea = () => this.length * this.width
-        } else if(this.shape == "s") {
+        } else if(this.shape === "s") {
             this.side = validateNumber(args[0])
             this.calcArea = () => Math.PI * this.side ** 2 / 8
             this.calcPizzaArea = () => this.calcArea() * 8
@@ -84,12 +84,12 @@ class Pizza {
         this.setQuantity(getRandomInteger(1, 3))
         this.setPrice(getRandomInteger(1000, 3000) / 100)
 
-        if(this.shape == "c") {
+        if(this.shape === "c") {
             this.setDiameter(getRandomInteger(2000, 6000) / 100)
-        } else if(this.shape == "r") {
+        } else if(this.shape === "r") {
             this.setLength(getRandomInteger(3000, 6000) / 100)
             this.setWidth(getRandomInteger(2000, 4000) / 100)
-        } else if(this.shape == "s") {
+        } else if(this.shape === "s") {
             this.setPrice((this.price / 8).toFixed(2))
             this.setSide(getRandomInteger(1000, 4000) / 100)
         }
@@ -98,14 +98,15 @@ class Pizza {
 
     exportData() {
         const exportData = [this.shape, this.name, this.quantity, this.price]
-        if(this.shape == "c") exportData.push(this.diameter)
-        else if(this.shape == "r") exportData.push(this.length, this.width)
-        else if(this.shape == "s") exportData.push(this.side)
+        if(this.shape === "c") exportData.push(this.diameter)
+        else if(this.shape === "r") exportData.push(this.length, this.width)
+        else if(this.shape === "s") exportData.push(this.side)
 
         for(const data of exportData.toReversed()) { //removing undefined from the end till a value is encountered
             if(data === undefined) exportData.pop()
             else break
         }
+
         return exportData.join(urlPizzaDataSeparator)
     }
 
@@ -122,7 +123,7 @@ class Pizza {
 
     toggleExclusion() { //exclude from finding best pizza
         this.boxNode.classList.toggle("pizza-box--exclude")
-        this.update(false, false)
+        this.update(false, false, true, false)
     }
 
     updateBoxInputs() {
@@ -138,11 +139,11 @@ class Pizza {
             this.boxNode.querySelector(".pizza-box__quantity").value = this.quantity ?? ""
             this.boxNode.querySelector(".pizza-box__price").value = this.price ?? ""
 
-            if(this.shape == "c") this.boxNode.querySelector(".pizza-box__diameter").value = this.diameter ?? ""
-            else if(this.shape == "r") {
+            if(this.shape === "c") this.boxNode.querySelector(".pizza-box__diameter").value = this.diameter ?? ""
+            else if(this.shape === "r") {
                 this.boxNode.querySelector(".pizza-box__length").value = this.length ?? ""
                 this.boxNode.querySelector(".pizza-box__width").value = this.width ?? ""
-            } else if(this.shape == "s") this.boxNode.querySelector(".pizza-box__side").value = this.side ?? ""
+            } else if(this.shape === "s") this.boxNode.querySelector(".pizza-box__side").value = this.side ?? ""
         }
     }
 
@@ -152,8 +153,8 @@ class Pizza {
             this.boxNode.querySelector(".pizza-box__total-price").innerText = validateNumber(this.calcTotalPrice().toFixed(2)) ?? ""
             this.boxNode.querySelector(".pizza-box__price-cm2").innerText = validateNumber(this.calcPricePerCm2().toFixed(2)) ?? ""
 
-            if(this.shape == "c") this.boxNode.querySelector(".pizza-box__slice-price").innerText = validateNumber(this.calcSlicePrice().toFixed(2)) ?? ""
-            else if(this.shape == "s") {
+            if(this.shape === "c") this.boxNode.querySelector(".pizza-box__slice-price").innerText = validateNumber(this.calcSlicePrice().toFixed(2)) ?? ""
+            else if(this.shape === "s") {
                 this.boxNode.querySelector(".pizza-box__pizza-area").innerText = validateNumber(this.calcPizzaArea().toFixed(2)) ?? ""
                 this.boxNode.querySelector(".pizza-box__pizza-price").innerText = validateNumber(this.calcPizzaPrice().toFixed(2)) ?? ""
             }
@@ -185,6 +186,7 @@ function findBestPizzas() {
             } else best.push(pizza)
         }
     }
+
     return best
 }
 
@@ -218,7 +220,7 @@ function addPizza(shape, ...args) {
             <img src="images/icons/randomize.png">
         </button>
 
-        <button class="pizza-box__button" title="Generate URL" onclick="openCopyBox(this.parentNode.parentNode.pizza.exportToUrl()); this.blur()">
+        <button class="pizza-box__button" title="Generate URL" onclick="openCopyTextBox(this.parentNode.parentNode.pizza.exportToUrl()); this.blur()">
             <img src="images/icons/link.png">
         </button>
 
@@ -248,7 +250,7 @@ function addPizza(shape, ...args) {
         <input class="pizza-box__price" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setPrice(this.value)">
     </div>`
 
-    if(newPizza.shape == "c") {
+    if(newPizza.shape === "c") {
         newBox.innerHTML += `
         <div class="pizza-box__data">
             <p>Diameter [cm]</p>
@@ -259,7 +261,7 @@ function addPizza(shape, ...args) {
             <p>Slice price [&#36;]</p>
             <p class="pizza-box__output pizza-box__slice-price"></p>
         </div>`
-    } else if(newPizza.shape == "r") {
+    } else if(newPizza.shape === "r") {
         newBox.innerHTML += `
         <div class="pizza-box__data">
             <p>Length [cm]</p>
@@ -270,7 +272,7 @@ function addPizza(shape, ...args) {
             <p>Width [cm]</p>
             <input class="pizza-box__width" type="number" min="0" step="0.01" placeholder="0" oninput="this.parentNode.parentNode.pizza.setWidth(this.value)">
         </div>`
-    } else if(newPizza.shape == "s") {
+    } else if(newPizza.shape === "s") {
         newBox.innerHTML += `
         <div class="pizza-box__data">
             <p>Side [cm]</p>
@@ -310,24 +312,20 @@ function addPizza(shape, ...args) {
 }
 
 const validateShape = shape => ["c", "C", "r", "R", "s", "S"].includes(shape) ? shape.toLowerCase() : undefined
-const validateName = name => name ? name.replaceAll(RegExp(urlPizzaDataSeparator + "|" + urlPizzasSeparator, "g"), " ").trim() : undefined //replaces url separators with " "
+const validateName = name => name || name === 0 ? name.toString().replaceAll(RegExp(urlPizzaDataSeparator + "|" + urlPizzasSeparator, "g"), " ").trim() : undefined //replaces url separators with " "
 const validateNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
+function setRandomValuesToAllPizzas() { for(const pizza of pizzas) pizza.setRandomValues() }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.delete() }
 function openDeleteAllPizzasBox() { if(confirm('Do you really want to delete all pizzas?')) deleteAllPizzas() }
-function setRandomValuesToAllPizzas() { for(const pizza of pizzas) pizza.setRandomValues() }
 function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split(urlPizzasSeparator)) addPizza(...pizzaData.split(urlPizzaDataSeparator)) }
+function importPizzasFromUrl(url) { if(getParamFromUrl(url, "pizzas")) importPizzas(getParamFromUrl(url, "pizzas")) }
 const exportAllPizzasToUrl = () => setParamInUrl(location.origin + location.pathname, "pizzas", exportAllPizzasData())
 
 function exportAllPizzasData() {
     let exportData = ""
     for(const pizza of pizzas) exportData += (exportData ? urlPizzasSeparator : "") + pizza.exportData()
     return exportData
-}
-
-function importPizzasFromUrl(url) {
-    const newUrl = new URL(url)
-    if(newUrl.searchParams.has("pizzas")) importPizzas(newUrl.searchParams.get("pizzas"))
 }
 
 function openImportPizzasFromUrlBox() {

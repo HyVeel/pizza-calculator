@@ -46,11 +46,11 @@ input:invalid {
     outline: 1px solid red;
 }
 
+/* Classes and pseudoclasses*/
 :focus {
     outline: 1px solid white;
 }
 
-/* Classes */
 .no-scroll {
     overflow: hidden !important;
 }
