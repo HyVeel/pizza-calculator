@@ -15,7 +15,20 @@
 </head>
 
 <body>
-    <p id="title-bar"><a href=".">🍕</a> Which pizza is the best choice?</p>
+    <button id="options__button" onclick="toggleOptions(); this.blur()">
+        <img src="images/icons/options.png" alt="Options">
+    </button>
+
+    <div id="options" class="no-display">
+        <button class="options__option" onclick="this.blur(); setRandomValuesToAllPizzas()">Randomize values for all pizzas</button>
+        <button class="options__option" onclick="this.blur(); openDeleteAllPizzasBox()">Delete all pizzas</button>
+        <button class="options__option" onclick="this.blur(); openCopyBox(exportAllPizzasToUrl())">Generate URL with all pizzas</button>
+        <button class="options__option" onclick="this.blur(); openImportPizzasFromUrlBox()">Import pizzas from URL</button>
+        <button class="options__option" onclick="this.blur(); openSetTitleBox()">Set title</button>
+        <button class="options__option" onclick="this.blur(); window.open('https://github.com/HyVeel', '_blank')">GitHub</button>
+    </div>
+
+    <p id="title-bar">🍕 Which pizza is the best choice?</p>
     <p id="info-bar">To add a new pizza hover over the + below and select its shape!</p>
 
     <div id="main">
