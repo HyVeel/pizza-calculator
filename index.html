@@ -15,17 +15,22 @@
 </head>
 
 <body>
-    <button id="options__button" onclick="toggleOptions(); this.blur()">
+    <button id="options__button" onclick="this.blur(); toggleOptions()">
         <img src="images/icons/options.png" alt="Options">
     </button>
 
     <div id="options" class="no-display">
+        <!-- <button class="options__option" onclick="this.blur()">Add multiple same pizzas</button> -->
         <button class="options__option" onclick="this.blur(); setRandomValuesToAllPizzas()">Randomize values for all pizzas</button>
         <button class="options__option" onclick="this.blur(); openDeleteAllPizzasBox()">Delete all pizzas</button>
-        <button class="options__option" onclick="this.blur(); openCopyBox(exportAllPizzasToUrl())">Generate URL with all pizzas</button>
+        <button class="options__option" onclick="this.blur(); openCopyTextBox(exportAllPizzasToUrl())">Generate URL with all pizzas</button>
         <button class="options__option" onclick="this.blur(); openImportPizzasFromUrlBox()">Import pizzas from URL</button>
+        <!-- <button class="options__option" onclick="this.blur()">Pizzas history</button> -->
         <button class="options__option" onclick="this.blur(); openSetTitleBox()">Set title</button>
-        <button class="options__option" onclick="this.blur(); window.open('https://github.com/HyVeel', '_blank')">GitHub</button>
+        <button class="options__option" onclick="this.blur(); window.open('https://github.com/HyVeel', '_blank')">
+            <img src="images/icons/github.png" alt="GitHub">
+            <p>GitHub</p>
+        </button>
     </div>
 
     <p id="title-bar">🍕 Which pizza is the best choice?</p>
