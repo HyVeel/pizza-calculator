@@ -55,7 +55,7 @@ function setInfo(text) { infoBar.innerText = text }
 // Options
 function toggleOptions() {
     options.classList.toggle("no-display")
-    ///document.body.classList.toggle("no-scroll")
+    document.body.classList.toggle("no-scroll")
 }
 
 // Misc
