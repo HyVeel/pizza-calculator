@@ -5,7 +5,7 @@ const infoBar = document.getElementById("info-bar")
 const backgrounds = 5
 
 // URL
-function replaceCurrentUrl(newUrl) { history.replaceState({}, "", newUrl)/* ; console.log(location.href) *//*  */ } //sets new url in address bar without page reloading
+function replaceCurrentUrl(newUrl) { history.replaceState({}, "", newUrl) } //sets new url in address bar without page reloading
 function updateTitleInUrl() { replaceCurrentUrl(setParamInUrl(location.href, "title", titleBar.innerText)) }
 
 function setParamInUrl(url, param, value) { //adds or replaces parameter in given url
