@@ -164,7 +164,7 @@ class Pizza {
         if(updateInputs) this.updateBoxInputs() //used on buttons use (setRandomValues, toggleName) and in addPizza
         if(updateOutputs) this.updateBoxOutputs() //used on every numeric input change
         if(markPizzas) markBestPizzas()
-        if(updateUrl) updatePizzasInUrl() //used on every input value change
+        if(updateUrl) updateAllPizzasInUrl() //used on every input value change
     }
 }
 
@@ -314,8 +314,10 @@ const validateName = name => name ? name.replaceAll(RegExp(urlPizzaDataSeparator
 const validateNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.delete() }
+function openDeleteAllPizzasBox() { if(confirm('Do you really want to delete all pizzas?')) deleteAllPizzas() }
 function setRandomValuesToAllPizzas() { for(const pizza of pizzas) pizza.setRandomValues() }
 function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split(urlPizzasSeparator)) addPizza(...pizzaData.split(urlPizzaDataSeparator)) }
+const exportAllPizzasToUrl = () => setParamInUrl(location.origin + location.pathname, "pizzas", exportAllPizzasData())
 
 function exportAllPizzasData() {
     let exportData = ""
@@ -328,12 +330,12 @@ function importPizzasFromUrl(url) {
     if(newUrl.searchParams.has("pizzas")) importPizzas(newUrl.searchParams.get("pizzas"))
 }
 
-function openImportFromUrlBox() {
+function openImportPizzasFromUrlBox() {
     const url = prompt("Paste URL with pizzas to add")
     if(url) importPizzasFromUrl(url)
 }
 
-function updatePizzasInUrl() {
+function updateAllPizzasInUrl() {
     if(pizzas.length === 0) replaceCurrentUrl(deleteParamFromUrl(location.href, "pizzas"))
     else replaceCurrentUrl(setParamInUrl(location.href, "pizzas", exportAllPizzasData()))
 }
