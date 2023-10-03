@@ -17,11 +17,11 @@ class Pizza {
             this.diameter = validateNumber(args[0])
             this.calcArea = () => Math.PI * (this.diameter / 2) ** 2
             this.calcSlicePrice = () => this.price / 8
-        } if(this.shape === "r") {
+        } else if(this.shape === "r") {
             this.length = validateNumber(args[0])
             this.width = validateNumber(args[1])
             this.calcArea = () => this.length * this.width
-        }  if(this.shape === "s") {
+        } else if(this.shape === "s") {
             this.side = validateNumber(args[0])
             this.calcArea = () => Math.PI * this.side ** 2 / 8
             this.calcPizzaArea = () => this.calcArea() * 8
@@ -108,7 +108,7 @@ class Pizza {
             this.setLength()
             this.setWidth()
         } else if(this.shape === "s") {
-            this.setPrice((this.price / 8).toFixed(2))
+            this.setPrice()
             this.setSide()
         }
 
