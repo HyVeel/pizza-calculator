@@ -68,5 +68,6 @@ function openCopyTextBox(text) {
 }
 
 // On load
+document.addEventListener("keydown", key => { if(key.code === "Escape") toggleOptions() })
 setRandomBackground()
 importTitleFromUrl(location.href)
