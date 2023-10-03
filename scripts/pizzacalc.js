@@ -17,11 +17,11 @@ class Pizza {
             this.diameter = validateNumber(args[0])
             this.calcArea = () => Math.PI * (this.diameter / 2) ** 2
             this.calcSlicePrice = () => this.price / 8
-        } else if(this.shape === "r") {
+        } if(this.shape === "r") {
             this.length = validateNumber(args[0])
             this.width = validateNumber(args[1])
             this.calcArea = () => this.length * this.width
-        } else if(this.shape === "s") {
+        }  if(this.shape === "s") {
             this.side = validateNumber(args[0])
             this.calcArea = () => Math.PI * this.side ** 2 / 8
             this.calcPizzaArea = () => this.calcArea() * 8
@@ -93,6 +93,25 @@ class Pizza {
             this.setPrice((this.price / 8).toFixed(2))
             this.setSide(getRandomInteger(1000, 4000) / 100)
         }
+
+        this.update(true)
+    }
+
+    clearValues() {
+        this.setName()
+        this.setQuantity()
+        this.setPrice()
+
+        if(this.shape === "c") {
+            this.setDiameter()
+        } else if(this.shape === "r") {
+            this.setLength()
+            this.setWidth()
+        } else if(this.shape === "s") {
+            this.setPrice((this.price / 8).toFixed(2))
+            this.setSide()
+        }
+
         this.update(true)
     }
 
@@ -220,6 +239,10 @@ function addPizza(shape, ...args) {
             <img src="images/icons/randomize.png">
         </button>
 
+        <button class="pizza-box__button" title="Clear" onclick="this.parentNode.parentNode.pizza.clearValues(); this.blur()">
+            <img src="images/icons/clear.png">
+        </button>
+
         <button class="pizza-box__button" title="Generate URL" onclick="openCopyTextBox(this.parentNode.parentNode.pizza.exportToUrl()); this.blur()">
             <img src="images/icons/link.png">
         </button>
@@ -316,6 +339,7 @@ const validateName = name => name || name === 0 ? name.toString().replaceAll(Reg
 const validateNumber = number => isFinite(parseFloat(number)) ? parseFloat(number) : undefined
 function addMultiplePizzas(quantity, ...args) { for(let i = 1; i <= quantity; i++) addPizza(...args) }
 function setRandomValuesToAllPizzas() { for(const pizza of pizzas) pizza.setRandomValues() }
+function clearValuesInAllPizzas() { for(const pizza of pizzas) pizza.clearValues() }
 function deleteAllPizzas() { for(const pizza of pizzas.toReversed()) pizza.delete() }
 function openDeleteAllPizzasBox() { if(confirm('Do you really want to delete all pizzas?')) deleteAllPizzas() }
 function importPizzas(pizzasData) { for(const pizzaData of pizzasData.split(urlPizzasSeparator)) addPizza(...pizzaData.split(urlPizzaDataSeparator)) }
